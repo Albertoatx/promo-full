@@ -1,0 +1,96 @@
+
+<form class="form-horizontal" ng-submit="actualizar()">
+
+	<div class="form-group">
+	  <div class="col-sm-offset-2 col-sm-10">
+	    <h3><p class="bg-info">Detalle del perfil de usuario</p></h3><br>
+	  </div>
+	</div>
+
+	<div class="form-group">
+	  <div class="col-sm-offset-2 col-sm-10">
+	    <input type="checkbox" ng-model="activado"> <label>Activa este check para poder actualizar campos </label><br/>
+	  </div>
+	</div>
+
+	<br>
+	<div class="form-group">
+	  <label for="inuser" class="col-sm-2 control-label">Username</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="text" 	
+	           ng-model="userDatos.username"   
+	 		   placeholder="Elija un nombre de usuario"  readonly>
+	  </div>
+	</div>
+
+	<br>
+	<div class="form-group">
+	  <label for="infirstname" class="col-sm-2 control-label">Nombre</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="text" 	
+	           ng-model="userDatos.firstname"   
+	 		   placeholder="Introduzca su nombre" ng-disabled="!activado">
+	  </div>
+	</div>
+
+	<br>
+ 	<div class="form-group">
+	  <label for="inlastname" class="col-sm-2 control-label">Apellidos</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="text" 	
+	           ng-model="userDatos.lastname"   
+	 		   placeholder="Introduzca sus apellidos" ng-disabled="!activado">
+	  </div>
+	</div>
+
+	<br>
+	<div class="form-group">
+	  <label for="indateofbirth" class="col-sm-2 control-label">Fecha Nacimiento</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="date" 	
+	           ng-model="userDatos.datebirth"   
+	 		   placeholder="Introduzca su fecha nacimieto"
+	 		   min="1920-01-01"       max="2016-12-31" ng-disabled="!activado">
+	  </div>
+	</div>
+
+	<br>
+	<div class="form-group">
+	  <label for="inmobile" class="col-sm-2 control-label">Móvil</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="text" 	
+	           ng-model="userDatos.phone"   
+	 		   placeholder="Introduzca un movil" ng-disabled="!activado">
+	  </div>
+	</div>
+
+	<br>
+	<div class="form-group">
+	  <label for="inlastname" class="col-sm-2 control-label">Email</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="email" 	
+	           ng-model="userDatos.email"   
+	 		   placeholder="Introduzca un email" ng-disabled="!activado">
+	  </div>
+	</div>
+
+	<div class="form-group">
+	  <div class="col-sm-offset-2 col-sm-10">
+	    <input type="submit" value="Actualizar" class="btn btn-primary btn-md" ng-disabled="!activado">
+	  </div>
+	</div>
+	
+
+</form>
+
+<br>
+<ng-include src="'views/notifications/error.html'"></ng-include>
+
+<br>
+<ng-include src="'views/notifications/correcto.html'"></ng-include>

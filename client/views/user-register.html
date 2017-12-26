@@ -1,0 +1,132 @@
+
+
+<form class="form-horizontal" ng-submit="register()">
+
+	<div class="form-group">
+	  <div class="col-sm-offset-2 col-sm-10">
+	    <h3><p class="bg-info">Cubra el siguiente formulario de registro para darse de alta</p></h3><br>
+	  </div>
+	</div>
+
+	<p class="text-warning">{{error_message}}</p>
+
+	<div class="form-group">
+	  <label for="inuser" class="col-sm-2 control-label">Username</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="text" 	
+	           ng-model="userDatos.username"   
+	 		   placeholder="Elija un nombre de usuario"  required>
+	  </div>
+	</div>
+
+	<div class="form-group">
+	  <label for="inpass" class="col-sm-2 control-label">Password</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="text" 	
+	           ng-model="userDatos.password"   
+	 		   placeholder="Elija un password" required>
+	  </div>
+	</div>
+
+	<div class="form-group">
+	  <label for="infirstname" class="col-sm-2 control-label">Nombre</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="text" 	
+	           ng-model="userDatos.firstname"   
+	 		   placeholder="Introduzca su nombre" required>
+	  </div>
+	</div>
+
+ 	<div class="form-group">
+	  <label for="inlastname" class="col-sm-2 control-label">Apellidos</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="text" 	
+	           ng-model="userDatos.lastname"   
+	 		   placeholder="Introduzca sus apellidos">
+	  </div>
+	</div>
+
+	<div class="form-group">
+	  <label for="indateofbirth" class="col-sm-2 control-label">Fecha Nacimiento</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="date" 	
+	           ng-model="userDatos.datebirth"   
+	 		   placeholder="Introduzca su fecha nacimieto"
+	 		   min="1920-01-01"       max="2016-12-31">
+	  </div>
+	</div>
+
+	<div class="form-group">
+	  <label for="inmobile" class="col-sm-2 control-label">Móvil</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="text" 	
+	           ng-model="userDatos.phone"   
+	 		   placeholder="Introduzca un movil">
+	  </div>
+	</div>
+
+	<div class="form-group">
+	  <label for="inemail" class="col-sm-2 control-label">Email</label>
+	  <div class="col-sm-10">
+	    <input class="form-control" 
+	           type="email" 	
+	           ng-model="userDatos.email"   
+	 		   placeholder="Introduzca un email" required>
+	  </div>
+	</div>
+
+	<div class="form-group">
+	  <div class="col-sm-offset-2 col-sm-10">
+	    <input type="submit" value="Registrarse" class="btn btn-primary btn-md">
+	  </div>
+	</div>
+
+</form>
+
+<br>
+
+<br>
+<ng-include src="'views/notifications/error.html'"></ng-include>
+
+<!--
+<div class="alert alert-danger" ng-show="isError">
+    <a href="#/user/create" class="close" data-dismiss="alert" aria-label="close" ng-click="isError = false">&times;</a>
+    <strong>Atento!</strong> {{errorMsg.data}}  <span class="glyphicon glyphicon-thumbs-down"></span>
+</div>
+-->
+
+
+
+<!--
+
+	<div class="form-group">
+	<label>Username</label>
+	<input type="username" 	ng-model="userDatos.username"   
+	 					   	placeholder="Elija un nombre de usuario"  	class="form-control" required><br>
+	</div>
+
+	<input type="password" 	ng-model="userDatos.password"   
+						   	placeholder="Elija un password"         	class="form-control" required><br>
+
+	<input type="text"     	ng-model="userDatos.firstname"  
+							placeholder="Introduzca su nombre"      	class="form-control"><br>
+	<input type="text"     	ng-model="userDatos.lastname"   
+							placeholder="Introduzca su apellido"      	class="form-control"><br>
+
+	<input type="date"     	ng-model="userDatos.datebirth"  
+							placeholder="Introduzca fecha nacimiento"	class="form-control"
+	                        min="1900-01-01"       max="2016-12-31"><br>
+
+	<input type="text"     	ng-model="userDatos.phone"      
+							placeholder="Introduzca un movil"         	class="form-control"><br>
+	<input type="email"    	ng-model="userDatos.email"      
+							placeholder="Introduzca un email" 		 	class="form-control"><br>	
+	<input type="submit" 	value="Registarse" 	 class="btn btn-primary" />
+
+	-->

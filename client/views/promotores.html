@@ -1,0 +1,62 @@
+
+ <h3><p class="bg-info">Listado de los promotores registrados en el sistema</p></h3>
+ El sistema esta actualmente gestionando un total de {{countPromo}} promotores. 
+ <span>Se visualizan {{results.length}} promotores.</span> <br>
+
+ <form class="navbar-form navbar-right navbar-full navbar-dark bg-faded" >
+     <label for="title" class="control-label">Filtar resultados</label>
+       <input type="text" class="form-control" ng-model="filtroPromo" placeholder="Search...">
+ </form>
+ <br>
+
+ <div class="form-group">
+      <input type="checkbox" ng-model="activado" ng-model="usuario" ng-click="gestionarCheckbox()"> 
+      <label>Ver solo mis promotores </label><br/>
+ </div>
+
+ <table class="table table-striped table-hover">
+  <thead>
+    <th>Codigo</th>
+    <th>Nombre</th>
+    <th>Fecha Alta</th>
+    <th>Operaciones</th>    
+  </thead>
+  <tbody>                           <!-- orderBy:'creado_el':true" --> 
+                                    <!-- filter:{'creado_por': $root.current_user}:true" -->
+    <tr ng-repeat="promotor in promotores|filter:filtroPromo
+                                         |filter:{'creado_por': usuario}:strictFilter as results" 
+                                         ng-class-odd="'odd'" ng-class-even="'even'">
+    <!--
+    <tr ng-repeat="promotor in promotores|filter:filtroPromo" 
+                                          ng-class-odd="'odd'" ng-class-even="'even'">
+    -->
+      <td><a ng-href="/#/promotor/detail/{{ promotor._id }}">
+          {{ promotor.codigop }}</a></td> <!-- ruta para detalle del promotor -->
+      <td>{{ promotor.nombrep }}</td>
+      <td>{{ promotor.creado_el | date:"MMM d, y ' a las ' h:mma"}}</td>
+    <!--  <td> <a ng-href="#" ng-click="eliminarPromotor(promotor._id)">Eliminar</a></td>  Borrado sin vista propia: NO enrutar -->
+      <td>
+        <div class="button-group">
+          <a ng-href="/#/promotor/edit/{{ promotor._id }}" class="btn btn-default">
+            <span class="glyphicon glyphicon-edit"></span>
+          </a>
+          <a ng-href="/#/promotor/delete/{{ promotor._id }}" class="btn btn-danger">  <!-- Borrado con vista propia: SI enrutar -->
+            <span class="glyphicon glyphicon-remove-circle"></span>
+          </a>
+        <!--   <a ng-href="/#/obraspromotor/{{ promotor._id }}/{{ promotor.nombrep }}" class="btn btn-info"> -->
+          <a ng-href="/#/obraspromotor/{{ promotor._id }}" class="btn btn-info" 
+              ng-click="$root.promotorSeleccionado = promotor.nombrep">
+            <span class="glyphicon glyphicon-list-alt"></span>
+          </a>
+        </div>
+      </td>                                                                    
+    </tr>
+  </tbody>
+</table> 
+
+<!--Boton para crear un promotor, en href especificamos la ruta a cargar (y por tanto la vista y controlador asociados )-->
+<br>
+<a class="btn btn-primary" href="/#/promotor/create">
+<span class="glyphicon glyphicon-plus"></span> Crear Promotor</a>
+
+

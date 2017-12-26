@@ -1,0 +1,19 @@
+{
+  "name": "obrasapp",
+  "version": "1.0.0",
+  "description": "Creacion de una API Restful para gestion de promotores y obras",
+  "main": "appback.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "AlbertoMM",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.14.0",
+    "express-session": "^1.14.0",
+    "mongoose": "^4.5.2"
+  }
+}
