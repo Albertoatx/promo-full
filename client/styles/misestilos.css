@@ -80,8 +80,8 @@ body {
   margin-top: 28px;
 }
 
-.container .obrasbuttons {   /* para mostrar varios botones en fila al consultar listado de obras */
-  display: inline-block;
+.obrasbuttons {   /* para mostrar varios botones en fila al consultar listado de obras */
+  display: inline;
 }
 
 /* Para ventana modal */
@@ -113,6 +113,30 @@ body {
     max-height: 800px;
     overflow: auto;
 }
+
+.scr-title{
+    color: #8f746c;
+    padding: 10px 0px;
+    border: 2px solid #8f746c;
+    margin: 10px auto; /* to center it use 'auto' for right-left margin */
+    border-radius: 7px;
+    text-align: center; 
+    /*
+    position: fixed;
+    top: 33px;
+    width: 75%; */
+}
+
+.scr-info{
+    color: #242729;
+    font-size: 16px;
+    letter-spacing: 1px;
+    padding: 3px; 
+    font-style: italic;
+    text-align: center;
+    background-color: #f7e6ff;
+}
+
 
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
@@ -175,7 +199,7 @@ body {
 }
 
 /*********************************************************************/
-/.form-register {
+.form-register {
   /*max-width: 660px;
   padding: 15px;
   margin: 0 auto; */

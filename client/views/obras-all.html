@@ -1,5 +1,8 @@
- <h3><p class="bg-info">Listado de todas las obras registradas en el sistema</p></h3>
- El sistema esta actualmente gestionando un total de {{countObras}} obras. <br>
+ <h3><p class="bg-info scr-title">Listado de todas las obras registradas en el sistema</p></h3>
+
+ <p class="scr-info">
+    El sistema esta actualmente gestionando un total de {{countObras}} obras. <br>
+ </p>
 
  <form class="navbar-form navbar-right navbar-full navbar-dark bg-faded" >
  	   <label for="title" class="control-label">Filtar resultados</label>
@@ -33,11 +36,17 @@
       <td>
         <div class="button-group">
           <!-- ruta Angular para EDITAR obra, llamara al controlador y vista: '/obrapromotor/:id/edit/:cod' -->
-          <a ng-href="/#/obrapromotor/{{obra._id}}/edit/{{obra.promociones.codigoobra}}" class="btn btn-default">
+          <a ng-href="/#/obrapromotor/{{obra._id}}/edit/{{obra.promociones.codigoobra}}" class="btn btn-default"
+              data-toogle="tooltip"
+              data-placement="top"
+              title="Editar Obra">
             <span class="glyphicon glyphicon-edit"></span>
           </a> 
           <!-- ruta Angular para BORRAR obra, llamara al controlador y vista: '/obrapromotor/:id/delete/:cod' -->
-          <a ng-href="/#/obrapromotor/{{obra._id}}/delete/{{obra.promociones.codigoobra}}" class="btn btn-danger">
+          <a ng-href="/#/obrapromotor/{{obra._id}}/delete/{{obra.promociones.codigoobra}}" class="btn btn-danger"
+              data-toogle="tooltip"
+              data-placement="top"
+              title="Borrar Obra">
             <span class="glyphicon glyphicon-remove-circle"></span>
           </a>
         </div>

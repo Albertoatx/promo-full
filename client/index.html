@@ -113,7 +113,7 @@
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         
         <script src="scripts/appfront.js"></script>
-      <!--  <script src="scripts/controllers/main.js"></script> -->
+        <script src="scripts/controllers/main.js"></script> 
         <script src="scripts/controllers/promotores.js"></script>
         <script src="scripts/models/factorias.js"></script>
         <script src="scripts/controllers/promotor-add.js"></script>
@@ -131,6 +131,23 @@
         <script src="scripts/controllers/user-detail.js"></script>
         <script src="scripts/controllers/user-admin.js"></script>
         <script src="scripts/controllers/user-delete.js"></script>
+
+        <!-- To manage nav-bar and tooltips with Jquery -->
+        <script>
+
+          $(function(){
+
+            //active-desactivate navbar 
+            $('#js-navbar-collapse li').on("click", function(){             
+              $('#js-navbar-collapse li').removeClass("active");
+              $(this).addClass("active");
+            });
+
+            //tooltip
+            $('[data-toogle="tooltip"]').tooltip();
+          });   
+
+        </script>
         
 </body>
 </html>
