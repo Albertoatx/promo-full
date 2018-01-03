@@ -31,5 +31,10 @@ angular.module('promotorApp')
                     }
                 );
             };
+
+            //Redirigimos al listado de obras de ese promotor
+			$scope.back = function () {
+				$location.path('/obraspromotor/' + $routeParams.id); 
+			};
         }
     ]);

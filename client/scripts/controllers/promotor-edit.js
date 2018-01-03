@@ -44,5 +44,9 @@ angular.module('promotorApp')
                 );
             }; 
 
+            //Redirigimos al listado de promotores
+			$scope.back = function () {
+				$location.path('/promotores'); 
+			};
         }
     ]);

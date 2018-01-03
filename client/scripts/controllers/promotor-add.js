@@ -14,13 +14,24 @@ angular.module('promotorApp')
         function($scope, $log, promotoresFactory, $location) {
 
             $scope.promotorDatos = {};              //Creamos el objeto promotor y lo adjuntamos a $scope
+            $scope.promotorDatos.direcp = {}; 
             $scope.pantallaAddP = true;
             
             $scope.isError = false;      
             $scope.errorMsg = '';   
-
+                  
+        
             $scope.guardarPromotor = function() {   //Crear un nuevo promotor
-                promotoresFactory.savePromotor($scope.promotorDatos).then(
+              /*
+              if ($scope.promotorDatos  && $scope.promotorDatos.codigop !== "" 
+                                        && $scope.promotorDatos.nombrep !== "" 
+                                        && $scope.promotorDatos.emailp  !== ""
+                                        && $scope.promotorDatos.direcp.provincia !== "") { 
+
+                  console.log("ENTRA EN IF para dar de alta un promotor"); */
+                  console.log($scope.promotorDatos);
+                  
+                  promotoresFactory.savePromotor($scope.promotorDatos).then(
                     function() {
                         $location.path('/promotores'); //Una vez guardado el promotor redirigimos al listado de los promotores
                     },
@@ -29,7 +40,17 @@ angular.module('promotorApp')
                         $scope.errorMsg = err; 
                         $log.error('error en guardarPromotor');
                     }
-                );
-            };
+                  ); 
+
+            /*  }  *///end if
+
+            }; //guadarPromotor
+        
+            
+			//Redirigimos al listado de promotores
+			$scope.back = function () {
+				$location.path('/promotores'); 
+			};
+
         }
     ]);

@@ -73,6 +73,7 @@
     <div class="footer">
       <div class="container">
         <p><span class="glyphicon glyphicon-heart"></span> Gestión de promotores y obras </p>
+        
         <!--
         <div class="row-fluid">
             <div class="col-md-6" ng-repeat="block in content">
@@ -84,6 +85,10 @@
         -->
       </div>
     </div>
+
+    <!--
+    <div id="map"></div>
+    -->
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID 
      <script>
@@ -98,10 +103,18 @@
 
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYPE5eUENmWQ4ci3EkbTBR3C1c45qb9tA"></script>
-    <!--
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
-    -->
+
+
+<!-- No usar ya que tras cargar el API hace un callback inicial a "initMap" y eso NO me interesa aqui
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYPE5eUENmWQ4ci3EkbTBR3C1c45qb9tA&callback=initMap">
+    </script>
+-->
+
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYPE5eUENmWQ4ci3EkbTBR3C1c45qb9tA">
+    </script>
+    
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -142,6 +155,12 @@
               $('#js-navbar-collapse li').removeClass("active");
               $(this).addClass("active");
             });
+
+            /* show-hide GoogleMap : DOESN'T WORK!            
+            $('#btnGoogleMap').on("click", function(){ 
+              console.log("Desde JQUERY entra evento click");            
+              $('#map').addClass("active");
+            }); */
 
             //tooltip
             $('[data-toogle="tooltip"]').tooltip();

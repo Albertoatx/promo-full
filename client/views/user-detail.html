@@ -9,7 +9,8 @@
 
 	<div class="form-group">
 	  <div class="col-sm-offset-2 col-sm-10">
-	    <input type="checkbox" ng-model="activado"> <label>Activa este check para poder actualizar campos </label><br/>
+	    <input type="checkbox" id="chkactualiz" ng-model="activado"> 
+			  <label for="chkactualiz">Pinche para poder actualizar perfil </label><br/>
 	  </div>
 	</div>
 
@@ -63,13 +64,12 @@
 	  <label for="inmobile" class="col-sm-2 control-label">Móvil</label>
 	  <div class="col-sm-10">
 	    <input class="form-control" 
-	           type="text" 	
+	           type="telephone" 	
 	           ng-model="userDatos.phone"   
 	 		   placeholder="Introduzca un movil" ng-disabled="!activado">
 	  </div>
 	</div>
 
-	<br>
 	<div class="form-group">
 	  <label for="inlastname" class="col-sm-2 control-label">Email</label>
 	  <div class="col-sm-10">
@@ -80,12 +80,13 @@
 	  </div>
 	</div>
 
+ <div class="text-center"> 
 	<div class="form-group">
 	  <div class="col-sm-offset-2 col-sm-10">
 	    <input type="submit" value="Actualizar" class="btn btn-primary btn-md" ng-disabled="!activado">
 	  </div>
 	</div>
-	
+ </div>		
 
 </form>
 

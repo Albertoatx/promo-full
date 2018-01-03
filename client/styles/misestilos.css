@@ -138,6 +138,68 @@ body {
 }
 
 
+/* styles for Google maps window */
+/* to center it use 'auto' for right-left margin */ 
+#map{
+  height: 400px;
+  width: 98%;
+  margin: 10px auto; 
+  border: 2px solid #8f746c;
+  border-radius: 5px;
+  /*overflow: visible;*/
+}
+
+/*
+#map .active{
+  height:400px;
+  width:100%;
+  border: 2px solid #8f746c;
+  border-radius: 5px;
+  margin: 3px auto;  
+}*/
+
+fieldset{
+  padding: 5px;
+  margin: 3px;
+  border: 1px solid #8f746c;
+}
+
+fieldset .form-group{
+  padding: 5px;
+  margin: 3px;
+}
+
+/*
+legend{
+  padding: 10px;
+  font-size: 18px;
+  letter-spacing: 0.1em;
+} */
+
+input[type="email"], input[type="telephone"] {
+  display: block; /* separate lines for each one */
+  margin-bottom: 15px;
+  padding: 10px 10px 10px 50px; /* 50 px to give space for images */
+  border: 0;
+  border-radius: 4px;
+  background: url(../images/inputs.png) no-repeat;
+ /* color: #222; */ /* the color of the text we write in the input fields */
+  float: left; /* tutorial6 */
+  clear: both;
+}
+
+/* the black envelope in the image */
+input[type="email"]{
+  background-position: 7px 8px;  
+}
+
+
+/* the black phone in the image */
+input[type="telephone"]{
+  background-position: 7px -58px; 
+}
+
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   .container {
@@ -262,4 +324,5 @@ a {
   content: "";
   padding: 0;
 }
+
 

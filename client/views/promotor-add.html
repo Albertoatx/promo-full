@@ -3,28 +3,35 @@
   <div class="form-group">
     <label for="title" class="control-label">Código Promotor</label>
     <div ng-if="pantallaAddP">
-      <input type="text" ng-model="promotorDatos.codigop" class="form-control" id="procod" 
-                                                        placeholder="Introduzca el código de promotor">
+      <input type="text" ng-model="promotorDatos.codigop" 
+             class="form-control" id="procod" 
+             placeholder="Introduzca el código de promotor" required>
     </div>
     <div ng-if="pantallaEditP">
-      <input type="text" ng-model="promotorDatos.codigop" class="form-control" id="procod" 
-                                                        placeholder="Introduzca el código de promotor" readonly>
+      <input type="text" ng-model="promotorDatos.codigop" 
+            class="form-control" id="procod" 
+            placeholder="Introduzca el código de promotor" readonly>
     </div>
   </div>
 
   <div class="form-group">
     <label for="title" class="control-label">Nombre Promotor</label>
-    <input type="text" ng-model="promotorDatos.nombrep" class="form-control" id="pronom" placeholder="Teclee el nombre del promotor">
+    <input type="text" ng-model="promotorDatos.nombrep" 
+          class="form-control" id="pronom" 
+          placeholder="Teclee el nombre del promotor" required>
   </div>
+
   <div class="form-group">
     <label for="title" class="control-label">CIF Promotor</label>
-    <input type="text" ng-model="promotorDatos.cifp" class="form-control" id="pronom" placeholder="Teclee el CIF del promotor">
+    <input type="text" ng-model="promotorDatos.cifp" 
+          class="form-control" id="pronom" 
+          placeholder="Teclee el CIF del promotor">
   </div>
 
   <div class="form-group">
     <label for="inmovil" class="control-label">Movil Promotor</label>
       <input class="form-control" 
-             type="text"  
+             type="telephone"  
              ng-model="promotorDatos.telefp"   
          placeholder="Introduzca un movil">
   </div>
@@ -32,13 +39,15 @@
   <div class="form-group">
     <label for="inemail" class="control-label">Email promotor</label>
       <input class="form-control" 
-             type="text"  
+             type="email"  
              ng-model="promotorDatos.emailp"   
-         placeholder="Introduzca un email">
+         placeholder="Introduzca un email" required>
   </div>
 
   <fieldset ng-form="fAddress">
     <legend>Direccion del promotor</legend>
+
+    <div class="row">
     <div class="form-group">
       <label for="incalle" class="col-sm-2 control-label">Calle</label>
       <div class="col-sm-10">
@@ -48,8 +57,11 @@
            placeholder="Introduzca la calle">
       </div>
     </div>
+    </div>
+
+    <div class="row">
     <div class="form-group">
-      <label for="inpueblo" class="col-sm-2 control-label">Pueblo</label>
+      <label for="inpueblo" class="col-sm-2 control-label">Localidad</label>
       <div class="col-sm-10">
         <input class="form-control" 
                type="text"  
@@ -57,16 +69,21 @@
            placeholder="Introduzca el pueblo">
       </div>
     </div>
+    </div>
+
+    <div class="row">
     <div class="form-group">
       <label for="inprov" class="col-sm-2 control-label">Provincia</label>
       <div class="col-sm-4">
         <input class="form-control" 
                type="text"  
                ng-model="promotorDatos.direcp.provincia"   
-           placeholder="Introduzca la provincia del promotor">
+           placeholder="Introduzca la provincia del promotor" required>
       </div>
     </div>
-    <br>
+    </div>
+
+    <div class="row">
     <div class="form-group">
       <label for="incp" class="col-sm-2 control-label">Codigo postal</label>
       <div class="col-sm-4">
@@ -76,10 +93,17 @@
            placeholder="Introduzca un codigo postal">
       </div>
     </div>
+    </div>
+
   </fieldset>
 
   <br>
-  <input type="submit" class="btn btn-primary" ng-click="guardarPromotor()" value="Save">
+  <div class="obrasbuttons">
+    <input type="submit" class="btn btn-primary" ng-click="guardarPromotor()" value="Save">
+
+    <button type="button" class="btn btn-success" ng-click="back()">Back</button>
+  </div>
+
 </form>
 
 <!--
@@ -91,3 +115,5 @@
 
 <br>
 <ng-include src="'views/notifications/error.html'"></ng-include>
+
+

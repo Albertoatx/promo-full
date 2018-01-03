@@ -18,7 +18,11 @@
     <label for="title" class="control-label">Nombre Obra</label>
     <input type="text" ng-model="obraDatos.nombreobra" class="form-control" id="obranom" placeholder="Teclee el nombre de la obra">
   </div>
-  <input type="submit" class="btn btn-primary" ng-click="guardarObra()" value="Save">
+
+   <div class="form-group">
+    <input type="submit" class="btn btn-primary" ng-click="guardarObra()" value="Save">
+    <button ng-click="back()" type="button" class="btn btn-success">Back </button>
+  </div>
 </form>
 
 <br>
