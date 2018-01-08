@@ -31,12 +31,16 @@ angular.module('promotorApp')
 
 
           $rootScope.promotorSeleccionado = '';
-          console.log($rootScope.current_user);
+          /*
+          console.log("current user: " + $rootScope.current_user);
+          console.log("administrator: " + $rootScope.administrator);
+          console.log("authenticated: " + $rootScope.authenticated); */
           $scope.miFiltro = '';
           $scope.promotoresAll = [];
           $scope.promotoresUser = [];
           $scope.strictFilter = false;
 
+          
         
           //Llama al método "getPromotores" de la API del front definido en "factorias.js" y que a su vez se comunica con el backend
           // con el backend mediante un servicio REST a la ruta adecuada
@@ -66,6 +70,11 @@ angular.module('promotorApp')
                   }
               );
           };  */
+
+          $scope.sort = function(keyname){
+            $scope.sortKey = keyname;         //set the sortKey to the param passed
+            $scope.reverse = !$scope.reverse; //if true make it false and vice versa
+          }
 
           //OPCION1: Usar un FILTRO de Angular, de este modo no hace falta ir al servidor por "mis promotores"
           $scope.gestionarCheckbox = function() {   

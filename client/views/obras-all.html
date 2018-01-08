@@ -13,14 +13,50 @@
 
  <table class="table table-striped">
   <thead>
+    <!--
     <th>Codigo Promotor</th>
     <th>Codigo Obra</th>
     <th>Nombre Obra </th>
     <th>Fecha Alta Obra</th>
-    <th>Operaciones</th>    
+    <th>Operaciones</th>   
+    -->
+
+    <!-- Implement sort feature 
+       * ng-show="sortKey==" to show the icon ONLY on the column that is being sorted
+       * ng-class to change the icon depending upon the value of reverse.
+    --> 
+    <th ng-click="sort('codigop')">Codigo Promotor
+      <span class="glyphicon sort-icon" 
+            ng-show="sortKey=='codigop'" 
+            ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+      </span>
+    </th>
+    <th ng-click="sort('codigoobra')">Codigo Obra
+      <span class="glyphicon sort-icon" 
+            ng-show="sortKey=='codigoobra'" 
+            ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+      </span>
+    </th>
+    <th ng-click="sort('nombreobra')">Nombre Obra 
+      <span class="glyphicon sort-icon" 
+            ng-show="sortKey=='nombreobra'" 
+            ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+      </span>
+    </th>
+    <th ng-click="sort('creada')">Fecha Alta Obra
+      <span class="glyphicon sort-icon" 
+            ng-show="sortKey=='creada'" 
+            ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+      </span>
+    </th>
+    <th>Operaciones</th> 
   </thead>
+
+
   <tbody>
-    <tr ng-repeat="obra in obras|filter:filtro" ng-class-odd="'odd'" ng-class-even="'even'">
+    <tr ng-repeat="obra in obras|orderBy:sortKey:reverse
+                                |filter:filtro" 
+        ng-class-odd="'odd'" ng-class-even="'even'">
 
       <!-- OJO, en esta pantalla obra._id es el identificador del PROMOTOR, no de la OBRA que no tiene campo _id -->
 

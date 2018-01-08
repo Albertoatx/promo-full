@@ -29,6 +29,11 @@ angular.module('promotorApp')
           });
 
 
+          $scope.sort = function(keyname){
+            $scope.sortKey = keyname;         //set the sortKey to the param passed
+            $scope.reverse = !$scope.reverse; //if true make it false and vice versa
+          }
+
           //Cuando se pinche en el boton "No" redirigimos al listado de promotores
           $scope.back = function() {
             $location.path('/promotores'); 

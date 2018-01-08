@@ -43,24 +43,13 @@
     <div class="row">
     <div class="form-group">
       <label for="incalle" class="col-sm-2 control-label">Calle</label>
-      <div class="col-sm-10">
+      <div class="col-sm-9">
         <input class="form-control" 
                type="text"  
                ng-model="promotorDatos.direcp.callep"   
            	   readonly>
       </div>
-    </div>
-    </div>
-
-    <div class="row">
-    <div class="form-group">
-      <label for="inpueblo" class="col-sm-2 control-label">Pueblo</label>
-      <div class="col-sm-10">
-        <input class="form-control" 
-               type="text"  
-               ng-model="promotorDatos.direcp.pueblo"   
-           	   readonly>
-      </div>
+      <div class="col-sm-1"></div>
     </div>
     </div>
 
@@ -71,6 +60,18 @@
         <input class="form-control" 
                type="text"  
                ng-model="promotorDatos.direcp.provincia"   
+           	   readonly>
+      </div>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="form-group">
+      <label for="inpueblo" class="col-sm-2 control-label">Localidad</label>
+      <div class="col-sm-4">
+        <input class="form-control" 
+               type="text"  
+               ng-model="promotorDatos.direcp.pueblo"   
            	   readonly>
       </div>
     </div>
@@ -89,13 +90,14 @@
       <div class="col-sm-3">
         <button type="button" 
                 class="btn btn-info glyphicon glyphicon-map-marker" id="btnGoogleMap" 
-                ng-show="addressFilled&&(countClicks==0)"
+                ng-show="addressFilled && (countClicks == 0)"
                 ng-click="iniciarMapaGoogle()"> Mostrar
                 <!-- ng-show="addressFilled&&!viewMap" -->
         </button>
+         <!-- Si anteriormente realizamos peticion http para cargar mapa -> NO volver a hacerla *-->
         <button type="button" 
                 class="btn btn-warning glyphicon glyphicon-resize-vertical" id="btnGoogleMap" 
-                ng-show="addressFilled&&(countClicks>0)"     
+                ng-show="addressFilled && (countClicks > 0)"     
                 ng-click="toggleMap()">  Conmutar
                <!-- ng-show="viewMap" ng-click="ocultarMapaGoogle()"> Ocultar -->
         </button>

@@ -200,7 +200,44 @@ input[type="telephone"]{
 }
 
 
-/* Responsive: Portrait tablets and up */
+/* give validation styles to forms --------------------------------------*/
+
+#promotorForm input.ng-invalid.ng-touched, 
+#obraForm input.ng-invalid.ng-touched {
+ /* border: 1px solid red; */
+  border-left: 5px solid red;
+  border-bottom: 1px solid #E82E2E; 
+  border-right: 1px solid #E82E2E;
+  border-top: 1px solid #E82E2E;
+}
+
+#promotorForm input.ng-valid.ng-touched,
+#obraForm input.ng-valid.ng-touched{
+  border-left: 5px solid green;
+}
+
+/* disable inputs with attribute disabled, such as buttons in form */
+input[disabled="disabled"]{
+  opacity: 0.5;
+  cursor: not-allowed; 
+}
+
+/* style our help validation messages */
+.form-group small{
+  color: red;
+  display: block;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* override Bootstrap help validation messages */
+.help-block{
+  text-align: center;
+  font-size: 14px;
+}
+
+
+/* Responsive: Portrait tablets and up ----------------------------------------*/
 @media screen and (min-width: 768px) {
   .container {
     max-width: 1024px; /* cambie esta propiedad para ver más info en las filas de las tablas */

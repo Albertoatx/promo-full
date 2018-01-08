@@ -28,21 +28,49 @@
 <br>
 
  <table class="table table-striped table-hover">
+  <!--
   <thead>
     <th>Codigo</th>
     <th>Nombre</th>
     <th>Fecha Alta</th>
     <th>Operaciones</th>    
   </thead>
-  <tbody>                           <!-- orderBy:'creado_el':true" --> 
+  -->
+
+  <!-- Implement sort feature 
+       * ng-show="sortKey==" to show the icon ONLY on the column that is being sorted
+       * ng-class to change the icon depending upon the value of reverse.
+  -->
+  <thead>
+    <th ng-click="sort('codigop')">Codigo
+      <span class="glyphicon sort-icon" 
+            ng-show="sortKey=='codigop'" 
+            ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+      </span>
+    </th>
+    <th ng-click="sort('nombrep')">Nombre
+      <span class="glyphicon sort-icon" 
+            ng-show="sortKey=='nombrep'" 
+            ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+      </span>
+    </th>
+    <th ng-click="sort('creado_el')">Fecha Alta
+      <span class="glyphicon sort-icon" 
+            ng-show="sortKey=='creado_el'" 
+            ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}">
+      </span>
+    </th>
+    <th>Operaciones</th>    
+  </thead>
+
+  <tbody>                           
                                     <!-- filter:{'creado_por': $root.current_user}:true" -->
+    <!-- AngularJs provides 'orderBy' filter which takes in 2 arguments: key to sort + Order of sort (boolean)  -->
     <tr ng-repeat="promotor in promotores|filter:filtroPromo
+                                         |orderBy:sortKey:reverse
                                          |filter:{'creado_por': usuario}:strictFilter as results" 
                                          ng-class-odd="'odd'" ng-class-even="'even'">
-    <!--
-    <tr ng-repeat="promotor in promotores|filter:filtroPromo" 
-                                          ng-class-odd="'odd'" ng-class-even="'even'">
-    -->
+
       <td><a ng-href="/#/promotor/detail/{{ promotor._id }}">
           {{ promotor.codigop }}</a></td> <!-- ruta para detalle del promotor -->
       <td>{{ promotor.nombrep }}</td>

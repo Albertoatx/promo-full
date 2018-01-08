@@ -9,9 +9,9 @@
  */
 angular.module('promotorApp')
 
-   .controller('PromotorEditCtrl', ['$scope', '$log', 'promotoresFactory', '$location', '$routeParams',
+   .controller('PromotorEditCtrl', ['$scope', '$log', 'promotoresFactory', '$location', '$routeParams', 'provinciasDataSvc',
     	//Llama al "deletePromotor" de la API del front (en "factorias.js") que comunica con backend mediante servicio REST a ruta adecuada
-        function($scope, $log, promotoresFactory, $location, $routeParams) {
+        function($scope, $log, promotoresFactory, $location, $routeParams, provinciasDataSvc) {
           
             $scope.editPromotor = true; //Indica que estamos en la vista de edicion
             $scope.promotorDatos_id = $routeParams.id;
@@ -19,6 +19,8 @@ angular.module('promotorApp')
             $scope.isError = false;      
             $scope.errorMsg = '';   
             $scope.pantallaEditP = true;
+            $scope.pantallaAddP = false;
+            $scope.provincias = provinciasDataSvc.provincias;
 
             //Recuperamos los datos de promotor para poder mostrarlos en pantalla 
             promotoresFactory.detailPromotor($routeParams.id).then(

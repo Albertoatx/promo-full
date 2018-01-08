@@ -83,7 +83,7 @@ angular.module('promotorApp')
                         function (err) {
                             console.log("Error al intentar conseguir las coordenadas");
                         } */
-                        ); 
+                        );
 
                 },
                 //GOOGLE MAPS **********************************************************************************
@@ -101,15 +101,15 @@ angular.module('promotorApp')
 
                         // New map
                         var map = new google.maps.Map(document.getElementById('map'), options);
-                        
+
                         // OPT1 to prevent showing a gray map: 
-                        // Wait for map's 'idle' state (i.e. when it's finished) to trigger event 'resize' on the map
+                        // Wait for map's 'idle' state (i.e. when it's finished) to trigger event 'resize' on the map                        
                         google.maps.event.addListenerOnce(map, 'idle', function () {
                             var currentCenter = map.getCenter();
                             google.maps.event.trigger(map, 'resize');
                             map.setCenter(currentCenter);
                         }); 
-                        
+
                         // OPT2 to prevent showing a gray map: 
                         /* dispatch a 'resize' event for the window
                         setTimeout(function () {
@@ -208,8 +208,8 @@ angular.module('promotorApp')
         }
     ])
     //Creamos una factoria (proporcionará una API en el front) para la autenticacion que comunica con la ruta del backend
-    .factory('authFactory', ['$http',
-        function ($http) {
+    .factory('authFactory', ['$http', '$rootScope', '$location',
+        function ($http, $rootScope, $location) {
             return {
                 saveUser: function (userData) {
                     return $http.post('/auth/signup', userData);
@@ -235,6 +235,32 @@ angular.module('promotorApp')
                 },
                 renewPassword: function (data) {
                     return $http.post('/auth/newpassword', data);
+                },
+                //He inyectado el $rootscope y $location para poder usarlos desde la factoria
+                checkPermissions: function () {
+                    if ($rootScope.authenticated === true) {
+                        console.log("User has permissions");
+                    } else {
+                        alert("You don't have access here! You must log in before");
+                        $location.path('user/login');
+                    }
+                },
+                checkUserRole: function () {
+                        console.log("Entre en metodo checkUserRole");
+                        console.log("current user: "  + $rootScope.current_user);
+                        console.log("administrator: " + $rootScope.administrator);
+                        console.log("authenticated: " + $rootScope.authenticated);
+
+                    if ($rootScope.authenticated === true && 
+                        $rootScope.administrator === true) {
+                        console.log("User has permissions");
+                    } else if ($rootScope.authenticated === true) {
+                        alert("You don't have access here! Your user does NOT have admin privileges");
+                        $location.path('/promotores');
+                    } else {
+                        alert("You don't have access here! You must log in with admin privileges");
+                        $location.path('user/login');
+                    }
                 },
             };
 

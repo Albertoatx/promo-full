@@ -8,8 +8,9 @@
  * Controller of the promotorApp
  */
 angular.module('promotorApp')
-	.controller('PromotorDetailCtrl', ['$scope', '$log', 'promotoresFactory', '$routeParams', '$location',
-		function ($scope, $log, promotoresFactory, $routeParams, $location) {
+	.controller('PromotorDetailCtrl', 
+	  ['$scope', '$log', 'promotoresFactory', '$routeParams', '$location', 'provinciasDataSvc',
+		function ($scope, $log, promotoresFactory, $routeParams, $location, provinciasDataSvc) {
 
 			$scope.viewPromotor = true; //Vamos a usar "tabs" para la navegación
 			$scope.viewMap = false;
@@ -20,6 +21,7 @@ angular.module('promotorApp')
 			$scope.promotorDatos = {}; //Vaciamos el objeto movie del $scope
 			$scope.promotorDatos._id = $routeParams.id;
 			console.log($scope.promotorDatos._id);
+			//console.log(provinciasDataSvc.provincias);
 
 			$scope.isError = false;
 			$scope.errorMsg = {};
