@@ -8,8 +8,8 @@ angular.module('promotorApp')
     //Ver esta factoria como una API en el frontend para comunicarse con nuestra API definida en el backend con ExpressJS
     // (Normalmente se define 1 funcionalidad en el front para cada funcionalidad en el backend haciendo una petición a la ruta ExpressJS apropiada)
     //NOTA: Los controladores de Angular serán quienes trabajen con estas factorias que definimos aqui.
-    .factory('promotoresFactory', ['$http',
-        function ($http) {
+    .factory('promotoresFactory', ['$http', '$q',
+        function ($http, $q) {
 
             // Sin salida a Internet esta instruccion google = undefined ya que no ha podido descargar el script
             //   y esto tenia como efecto secundario que no se recuperasen los promotores
@@ -19,12 +19,38 @@ angular.module('promotorApp')
             var baseUrlForCoordenates = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
             var keyApi = 'AIzaSyAYPE5eUENmWQ4ci3EkbTBR3C1c45qb9tA';
 
+            var self = this;
+            self.promotores = null;
+
             return {
 
                 //PROMOTORES *********************************************************************************
+                //$http devuelve una promesa
                 getPromotores: function () {
-                    //return $http.get('/api/promotores'); //$http devuelve una promesa
-                    return $http.get('/api/promotores');  //Llama al servicio web REST del backend encargado de atender la ruta "/api/pages"
+                    //OLD VERSION
+                    //return $http.get('/api/promotores');  //Llama al servicio web REST del backend encargado de atender la ruta "/api/pages"
+
+                    //NEW VERSION (uses $q to cached data)
+                    // Create a deferred operation.
+                    var deferred = $q.defer();
+                    
+                    // If we already have the list of promoters (CACHED), we can resolve the promise.
+                    if(self.promotores !== null) {
+                        console.log("(from Cache!)" + self.promotores);
+                        deferred.resolve(self.promotores);
+                    } else {
+                        // Get promoters from the server.
+                        $http.get('/api/promotores')
+                          .then(function(response) {
+                            self.promotores = response.data;
+                            console.log("(from Server!)" + self.promotores);
+                            deferred.resolve(self.promotores);
+                          },function(error) {
+                            deferred.reject(error);
+                          });
+                    }
+ 
+                    return deferred.promise; //return the promise we've built with deferred
                 },
                 savePromotor: function (promotorData) {
                     return $http.post('/api/promotores/add', promotorData);
@@ -208,8 +234,8 @@ angular.module('promotorApp')
         }
     ])
     //Creamos una factoria (proporcionará una API en el front) para la autenticacion que comunica con la ruta del backend
-    .factory('authFactory', ['$http', '$rootScope', '$location',
-        function ($http, $rootScope, $location) {
+    .factory('authFactory', ['$http', '$rootScope', '$location', '$q', "$route", 
+        function ($http, $rootScope, $location, $q, $route) {
             return {
                 saveUser: function (userData) {
                     return $http.post('/auth/signup', userData);
@@ -237,6 +263,8 @@ angular.module('promotorApp')
                     return $http.post('/auth/newpassword', data);
                 },
                 //He inyectado el $rootscope y $location para poder usarlos desde la factoria
+                //PROBLEMA: Aunque no permita ir a la ruta si que sigue haciendo peticion http y consultando datos
+                
                 checkPermissions: function () {
                     if ($rootScope.authenticated === true) {
                         console.log("User has permissions");
@@ -261,7 +289,64 @@ angular.module('promotorApp')
                         alert("You don't have access here! You must log in with admin privileges");
                         $location.path('user/login');
                     }
+                }, 
+                checkAccess: function (){
+                    // Create a deferred operation (this object contains the promise we'll return)
+                    var deferred = $q.defer(); 
+
+                    //Call 'resolve' on a deferred object to complete it successfully, 
+                    //Call 'reject' to fail it with an error.
+                    if ($rootScope.authenticated) {
+                        console.log("El usuario ha entrado en el sistema y puede consultar esta ruta");
+                        deferred.resolve();
+                    } else {
+                        alert("¡No tienes permisos para acceder aquí! Antes debes entrar en el sistema");
+                        deferred.reject();
+                        $location.path('user/login');
+                    }
+
+                    return deferred.promise; //Return the promise
                 },
+                checkAccessWithUser: function (){
+                    // Create a deferred operation (this object contains the promise we'll return)
+                    var deferred = $q.defer(); 
+                    //console.log("username en checkAccessWithUser" +  $route.current.params);
+
+                    if (!$rootScope.authenticated) {
+                        alert("¡No tienes permisos para acceder aquí! Antes debes entrar en el sistema");
+                        deferred.reject();
+                        $location.path('user/login');
+                    } else if ($rootScope.current_user !== $route.current.params.username &&
+                               $rootScope.current_user !== 'admin') {
+                        alert("¡No tienes permisos para acceder a otro perfil de usuario! Le redirigimos al suyo");
+                        deferred.reject();
+                        $location.path('/user/' + $rootScope.current_user);
+                    } else {
+                        console.log("El usuario ha accedido correctamente a los datos de su perfil");
+                        deferred.resolve();
+                    }
+
+                    return deferred.promise;  //Return the promise
+                },
+                checkAccessWithRole: function (){
+                    // Create a deferred operation (this object contains the promise we'll return)
+                    var deferred = $q.defer(); 
+
+                    if ($rootScope.authenticated && $rootScope.administrator) {
+                        console.log("El usuario ha entrado en el sistema y tiene permisos para consultar esta ruta");
+                        deferred.resolve();
+                    } else if ($rootScope.authenticated) {
+                        alert("No tienes permisos para acceder aquí: son necesarios permisos de administrador");
+                        deferred.reject();
+                        $location.path('/');  //Evitar asi que en 2ª peticion a misma http salga de la app                       
+                    } else {
+                        alert("¡No tienes permisos para acceder aquí! Antes debes entrar en el sistema como administrador");
+                        deferred.reject();
+                        $location.path('user/login');
+                    }
+
+                    return deferred.promise; //Return the promise
+                }
             };
 
         }

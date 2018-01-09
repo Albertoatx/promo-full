@@ -17,6 +17,7 @@ angular.module('promotorApp')
           
           $scope.promotorid = $routeParams.id;
           /*$scope.promotorname= $routeParams.nombre;*/
+          $scope.numItemsPerPage = 10;
 
           //Llama al método "getObrasPromotor" de la API del front definido en "factorias.js"
           promotoresFactory.getObrasPromotor($routeParams.id).then(      

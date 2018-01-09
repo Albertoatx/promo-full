@@ -10,7 +10,10 @@
   </thead>
   
   <tbody>
-    <tr ng-repeat="obra in obras">
+
+    <!-- <tr ng-repeat="obra in obras"> -->
+    <tr dir-paginate="obra in obras|itemsPerPage: numItemsPerPage">
+
       <!-- ruta en Angular para DETALLE de obra, llamara al controlador y vista: '/obrapromotor/:id/detail/:cod' -->
       <td><a ng-href="/#/obrapromotor/{{promotorid}}/detail/{{ obra.codigoobra }}">{{ obra.codigoobra }}</a></td> 
       <td>{{ obra.nombreobra }}</td>
@@ -37,6 +40,7 @@
   </tbody>
 </table> 
 
+<ng-include src="'views/pagination.html'"></ng-include>
 <br>
 
 <!-- <div class="col-md-6"></div> -->

@@ -45,10 +45,17 @@
 
   </thead>
   <tbody>                           <!-- orderBy:'creado_el':true" --> 
+    <!--
     <tr ng-repeat="usuario in usuarios|orderBy:sortKey:reverse
                                       |filter:filtroUsuarios" 
         ng-class-odd="'odd'" ng-class-even="'even'">
-
+    -->
+      
+    <tr dir-paginate="usuario in usuarios|orderBy:sortKey:reverse
+                                         |filter:filtroUsuarios
+                                         |itemsPerPage: numItemsPerPage"
+        ng-class-odd="'odd'" ng-class-even="'even'">
+        
       <td><a ng-href="/#/user/{{ usuario.username }}"> {{ usuario.username }}</a></td> <!-- ruta detalle del usuario -->
       <td>{{ usuario.firstname }}</td>
       <td>{{ usuario.lastname }}</td>
@@ -86,6 +93,8 @@
     </tr>
   </tbody>
 </table> 
+
+<ng-include src="'views/pagination.html'"></ng-include>
 
 <!--Boton para crear un usuario, en href especificamos la ruta a cargar (y por tanto la vista y controlador asociados )-->
 <!--

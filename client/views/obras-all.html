@@ -54,8 +54,13 @@
 
 
   <tbody>
-    <tr ng-repeat="obra in obras|orderBy:sortKey:reverse
-                                |filter:filtro" 
+    <!-- <tr ng-repeat="obra in obras|orderBy:sortKey:reverse 
+                                     |filter:filtro"
+             ng-class-odd="'odd'" ng-class-even="'even'">
+    -->
+    <tr dir-paginate="obra in obras|orderBy:sortKey:reverse
+                                   |filter:filtro
+                                   |itemsPerPage: numItemsPerPage" 
         ng-class-odd="'odd'" ng-class-even="'even'">
 
       <!-- OJO, en esta pantalla obra._id es el identificador del PROMOTOR, no de la OBRA que no tiene campo _id -->
@@ -90,6 +95,8 @@
     </tr>
   </tbody>
 </table> 
+
+<ng-include src="'views/pagination.html'"></ng-include>
 
 <br>
 

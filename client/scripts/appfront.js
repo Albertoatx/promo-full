@@ -4,7 +4,9 @@
 // Declare app level module which depends on filters, and services
 angular.module('promotorApp', [
     'ngRoute',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'ngAnimate', 
+    'angularUtils.directives.dirPagination'
 ]) //Pensar en "Run" como el controlador inicial (para el index.html) donde se fijan variables en tiempo de inicio de la aplicacion.
    //Only instances and constants can be injected into run blocks: This is to prevent further system configuration during application run time.
    //Run blocks are the closest thing in Angular to the main method. A run block is the code which needs to run to kickstart the application. 
@@ -37,7 +39,9 @@ angular.module('promotorApp', [
       };
   })
   //to inject a service in config you just need to call the Provider of the service by adding 'Provider' to it's name
- .config(function ($routeProvider, authFactoryProvider) {
+ .config(function ($routeProvider, authFactoryProvider, $locationProvider) {
+
+    //$locationProvider.html5Mode(true);
 
     $routeProvider
       .when('/', {
@@ -61,35 +65,44 @@ angular.module('promotorApp', [
             } */
 
             //If you define a Factory recipe, an empty Provider type with the $get method set to your factory function is automatically created
-           check: authFactoryProvider.$get().checkPermissions 
+           //PROBLEM: if the user is NOT logged in the http request still happens (in Chrome dev tools we can see data)
+           //check: authFactoryProvider.$get().checkPermissions
+
+           //
+           check: authFactoryProvider.$get().checkAccess
+
          }   
       })
       .when('/promotor/create', {
         templateUrl: 'views/promotor-add.html',
         controller: 'PromotorAddCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkPermissions 
+           //check: authFactoryProvider.$get().checkPermissions 
+           check: authFactoryProvider.$get().checkAccess
         }  
       })
       .when('/promotor/detail/:id', {
         templateUrl: 'views/promotor-detail.html',
         controller: 'PromotorDetailCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkPermissions 
+           //check: authFactoryProvider.$get().checkPermissions 
+           check: authFactoryProvider.$get().checkAccess
         }  
       })
       .when('/promotor/delete/:id', {
         templateUrl: 'views/promotor-delete.html',
         controller: 'PromotorDeleteCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkPermissions 
+           //check: authFactoryProvider.$get().checkPermissions 
+           check: authFactoryProvider.$get().checkAccess
         }  
       })
       .when('/promotor/edit/:id', {
         templateUrl: 'views/promotor-edit.html',
         controller: 'PromotorEditCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkPermissions 
+           //check: authFactoryProvider.$get().checkPermissions 
+           check: authFactoryProvider.$get().checkAccess
         } 
       })
       //Rutas front-end OBRAS ***********************
@@ -97,42 +110,48 @@ angular.module('promotorApp', [
         templateUrl: 'views/obras-all.html',
         controller: 'ObrasCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkPermissions 
+           //check: authFactoryProvider.$get().checkPermissions 
+           check: authFactoryProvider.$get().checkAccess
         }  
       })
       .when('/obraspromotor/:id', {
         templateUrl: 'views/obras.html',
         controller: 'ObrasPromotorCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkPermissions 
+           //check: authFactoryProvider.$get().checkPermissions 
+           check: authFactoryProvider.$get().checkAccess
         }  
       })
       .when('/obrapromotor/:id/create', {
         templateUrl: 'views/obra-add.html',
         controller: 'ObraAddCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkPermissions 
+           //check: authFactoryProvider.$get().checkPermissions
+           check: authFactoryProvider.$get().checkAccess 
         }
       })
       .when('/obrapromotor/:id/detail/:cod', {
         templateUrl: 'views/obra-detail.html',
         controller: 'ObraDetailCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkPermissions 
+           //check: authFactoryProvider.$get().checkPermissions 
+           check: authFactoryProvider.$get().checkAccess
         }
       })
       .when('/obrapromotor/:id/delete/:cod', {
         templateUrl: 'views/obra-delete.html',
         controller: 'ObraDeleteCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkPermissions 
+           //check: authFactoryProvider.$get().checkPermissions
+           check: authFactoryProvider.$get().checkAccess 
         }
       })
       .when('/obrapromotor/:id/edit/:cod', {
         templateUrl: 'views/obra-edit.html',
         controller: 'ObraEditCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkPermissions 
+           //check: authFactoryProvider.$get().checkPermissions
+           check: authFactoryProvider.$get().checkAccess 
         }
       })
       //Rutas front-end USUARIOS ***********************
@@ -148,25 +167,29 @@ angular.module('promotorApp', [
         templateUrl: 'views/user-detail.html',
         controller: 'UserDetailCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkPermissions 
+           //check: authFactoryProvider.$get().checkPermissions 
+          // check: authFactoryProvider.$get().checkAccessWithUser($routeParams.username)  //No permite injectar $routeParams aqui
+           check: authFactoryProvider.$get().checkAccessWithUser
         }
       })
       .when('/admin', { //Ruta al panel de administracion
         templateUrl: 'views/user-admin.html',
         controller: 'UserAdminCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkUserRole 
+           //check: authFactoryProvider.$get().checkUserRole
+           check: authFactoryProvider.$get().checkAccessWithRole 
         }
       })
       .when('/user/delete/:username', { 
         templateUrl: 'views/user-delete.html',
         controller: 'UserDeleteCtrl',
         resolve:{
-           check: authFactoryProvider.$get().checkUserRole 
+           //check: authFactoryProvider.$get().checkUserRole 
+           check: authFactoryProvider.$get().checkAccessWithRole 
         }
       })
       .otherwise({
-        redirectTo: '/home'
+        redirectTo: '/'
       });
       
     }) //config(function ($routeProvider)

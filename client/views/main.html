@@ -5,8 +5,10 @@
   </p>
   <br>
   <div class="mainbuttons">
-    <a class="btn btn-lg btn-default" ng-href="#/user/login">Inicia sesion <span class="glyphicon glyphicon-log-in"></span></a>
-    <a class="btn btn-lg btn-success" ng-href="#/user/create">Registrate! <span class="glyphicon glyphicon-pencil"></span></a>
+    <a ng-hide="authenticated" class="btn btn-lg btn-default" ng-href="#/user/login">Inicia sesion 
+       <span class="glyphicon glyphicon-log-in"></span></a>
+    <a ng-hide="authenticated" class="btn btn-lg btn-success" ng-href="#/user/create">Registrate! 
+       <span class="glyphicon glyphicon-pencil"></span></a>
   </div>
 </div>
 

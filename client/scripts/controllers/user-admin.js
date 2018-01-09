@@ -14,6 +14,7 @@ angular.module('promotorApp')
       function($scope, $log, authFactory, $location, $rootScope, $uibModal) {
 
           console.log($rootScope.current_user);
+          $scope.numItemsPerPage = 10;
         
           //Llama al método "getUsers" de la API del front definido en "factorias.js" y que se comunica con el back
           authFactory.getUsers().then(    

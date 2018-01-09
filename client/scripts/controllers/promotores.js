@@ -39,11 +39,13 @@ angular.module('promotorApp')
           $scope.promotoresAll = [];
           $scope.promotoresUser = [];
           $scope.strictFilter = false;
+          $scope.numItemsPerPage = 10;
 
           
-        
           //Llama al método "getPromotores" de la API del front definido en "factorias.js" y que a su vez se comunica con el backend
           // con el backend mediante un servicio REST a la ruta adecuada
+          // FUNCIONAAAAAAAAAAA - Version estable OLD (sin usar cache)
+          /*
           promotoresFactory.getPromotores().then(    
                 function(response) {  
                     //En el $scope estarán los datos devueltos por el servicio REST a la factoria.       
@@ -51,6 +53,18 @@ angular.module('promotorApp')
                     $scope.promotoresAll = response.data; 
                     $scope.countPromo = response.data.length;
                     console.log($scope.countPromo);
+                },
+                function(err) {
+                    $log.error(err);
+          }); */
+
+          // TESTEANDO NUEVA VERSION (la factoria ya trata la promesa y nos envia datos (de la cache o servidor) en otra promesa )************
+          promotoresFactory.getPromotores().then(    
+                function(data) {     
+                    $scope.promotores = data; 
+                    $scope.countPromo = data.length;
+                    console.log($scope.countPromo);
+                    console.log($scope.promotores);
                 },
                 function(err) {
                     $log.error(err);

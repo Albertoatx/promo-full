@@ -66,10 +66,21 @@
   <tbody>                           
                                     <!-- filter:{'creado_por': $root.current_user}:true" -->
     <!-- AngularJs provides 'orderBy' filter which takes in 2 arguments: key to sort + Order of sort (boolean)  -->
-    <tr ng-repeat="promotor in promotores|filter:filtroPromo
-                                         |orderBy:sortKey:reverse
-                                         |filter:{'creado_por': usuario}:strictFilter as results" 
-                                         ng-class-odd="'odd'" ng-class-even="'even'">
+    <!--
+     <tr ng-repeat="promotor in promotores    |filter:filtroPromo 
+                                              |filter:{'creado_por': usuario}:strictFilter 
+                                              |orderBy:sortKey:reverse
+                                              as results
+                                              "
+             ng-class-odd="'odd'" ng-class-even="'even'">
+    -->
+    
+    <tr dir-paginate="promotor in promotores|filter:filtroPromo
+                                            |filter:{'creado_por': usuario}:strictFilter
+                                            |orderBy:sortKey:reverse
+                                            |itemsPerPage: numItemsPerPage
+                                             as results" 
+        ng-class-odd="'odd'" ng-class-even="'even'">
 
       <td><a ng-href="/#/promotor/detail/{{ promotor._id }}">
           {{ promotor.codigop }}</a></td> <!-- ruta para detalle del promotor -->
@@ -104,5 +115,13 @@
     </tr>
   </tbody>
 </table> 
+
+ <ng-include src="'views/pagination.html'"></ng-include> 
+
+
+
+
+
+
 
 

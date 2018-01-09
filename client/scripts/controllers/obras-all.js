@@ -12,6 +12,8 @@ angular.module('promotorApp')
   .controller('ObrasCtrl', ['$scope', '$log', 'promotoresFactory', '$location', '$routeParams',
 
       function($scope, $log, promotoresFactory, $location, $routeParams) {
+
+          $scope.numItemsPerPage = 10;
           
           //Llama al método "getObrasAll" de la API del front definido en "factorias.js"
           promotoresFactory.getObrasAll().then(    
