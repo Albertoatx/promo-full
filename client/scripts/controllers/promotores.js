@@ -45,7 +45,7 @@ angular.module('promotorApp')
           //Llama al método "getPromotores" de la API del front definido en "factorias.js" y que a su vez se comunica con el backend
           // con el backend mediante un servicio REST a la ruta adecuada
           // FUNCIONAAAAAAAAAAA - Version estable OLD (sin usar cache)
-          /*
+          
           promotoresFactory.getPromotores().then(    
                 function(response) {  
                     //En el $scope estarán los datos devueltos por el servicio REST a la factoria.       
@@ -56,9 +56,10 @@ angular.module('promotorApp')
                 },
                 function(err) {
                     $log.error(err);
-          }); */
+          }); 
 
           // TESTEANDO NUEVA VERSION (la factoria ya trata la promesa y nos envia datos (de la cache o servidor) en otra promesa )************
+          /*
           promotoresFactory.getPromotores().then(    
                 function(data) {     
                     $scope.promotores = data; 
@@ -69,6 +70,7 @@ angular.module('promotorApp')
                 function(err) {
                     $log.error(err);
           });
+          */
 
           //Así se haría un borrado DIRECTO (es decir, sin no definimos vista parcial ni controlador propios)
           //    "eliminarPromotor" solo se lanza cuando el usuario pulse en "Eliminar" de la fila

@@ -1,5 +1,15 @@
 'use strict';
 
+/* Asynchronously Bootstrapping AngularJS Applications with Server-Side Data */
+/* To do that, eliminate 'ng-app' attribute from my HTML! <body ng-app="promotorApp">
+/*
+(function() {
+  var myApplication = angular.module("promotorApp", [
+    'ngRoute',
+    'ui.bootstrap',
+    'ngAnimate', 
+    'angularUtils.directives.dirPagination'])
+*/
 
 // Declare app level module which depends on filters, and services
 angular.module('promotorApp', [
@@ -7,15 +17,64 @@ angular.module('promotorApp', [
     'ui.bootstrap',
     'ngAnimate', 
     'angularUtils.directives.dirPagination'
-]) //Pensar en "Run" como el controlador inicial (para el index.html) donde se fijan variables en tiempo de inicio de la aplicacion.
+]) 
+   //Pensar en "Run" como el controlador inicial (para el index.html) donde se fijan variables en tiempo de inicio de la aplicacion.
    //Only instances and constants can be injected into run blocks: This is to prevent further system configuration during application run time.
    //Run blocks are the closest thing in Angular to the main method. A run block is the code which needs to run to kickstart the application. 
   .run(function($rootScope, $log, $location, authFactory) { 
       console.log("Se esta ejecutando el metodo de arranque RUN");
+      $rootScope.appAlreadyRun = false;
       $rootScope.administrator = false;
       $rootScope.authenticated = false;
       $rootScope.current_user = '';
-    
+
+      // La llamada al back-end devolvera una promesa (.then devuelve una promesa) 
+      // que debo forzar que se ejecute ANTES que el "resolve" del enrutado (debo encadenarlas)
+      // Para eso crear promesa y añadirla al $rootScope dentro del 'root' controller (el .run)
+      
+      $rootScope.currentUserPromise = authFactory.isLoggedIn().then(    
+          function(response) {
+
+            var sessionUsername = response.data;
+
+            //Comprobado: Se ejecuta 1 sola vez, al arrancar la app 
+            console.log('Promesa dentro del RUN, se ejecuta 1 sola vez');
+
+            // * si ya existe propiedad 'user' en la sesion -> user ya logeado
+            // * si NO existe propiedad 'user' en la sesion -> user NO logeado
+            if (sessionUsername && sessionUsername != '') {
+              $rootScope.current_user = sessionUsername; 
+              $rootScope.authenticated = true;
+
+              if (sessionUsername === 'admin') 
+                  $rootScope.administrator = true;
+
+              console.log('El usuario ' + sessionUsername + ' ya se encontraba previamente logeado!');
+            } 
+            //la promesa puede devolver algo para enlazar como parametro a la sgte promesa
+            return sessionUsername; 
+        },
+        function(err) {
+            $log.error(err);
+      });
+      
+
+      /*
+      $rootScope.$on('$routeChangeStart', function(e, curr, prev) {
+        if (curr.$$route && curr.$$route.resolve) {
+          console.log("Metodo RUN con $routeChangeStart");
+          // Show a loading message until promises aren't resolved
+          //$rootScope.loadingView = true;
+        }
+      });
+
+      $rootScope.$on('$routeChangeSuccess', function(e, curr, prev) {
+        console.log("Metodo RUN con $routeChangeSuccess");
+        // Hide loading message
+        //$rootScope.loadingView = false;
+      });
+      */
+
       //El método para logout lo hace global para que podamos acceder a el en todo momento
       $rootScope.signout = function(){
         //$http.get('/auth/logout'); //Podemos llamar directo sin usar factoria no tenemos una pantalla y controlador propios
@@ -26,6 +85,7 @@ angular.module('promotorApp', [
               $rootScope.administrator = false;
               $rootScope.authenticated = false;
               $rootScope.current_user = '';
+              $rootScope.appAlreadyRun = false;
               $location.path('/');
           },
           function(err) {
@@ -36,17 +96,33 @@ angular.module('promotorApp', [
               //flashMessageService.setMessage(err.data);
           }
         );
-      };
+      }; //end signout 
+
+
   })
   //to inject a service in config you just need to call the Provider of the service by adding 'Provider' to it's name
  .config(function ($routeProvider, authFactoryProvider, $locationProvider) {
 
     //$locationProvider.html5Mode(true);
 
+    //Run controllers only after initialization (RUN method) is complete in AngularJS
+    var chainedCheck = function($rootScope){
+        $rootScope.currentUserPromise.then(function(sessUsername) {
+          console.log("ENTRA DENTRO del THEN para encadenar promesa con usuario " + sessUsername);
+          authFactoryProvider.$get().checkAccess();
+        });
+    }
+
+    var chainedCheckForRole = function($rootScope){
+        $rootScope.currentUserPromise.then(function(sessUsername) {
+          authFactoryProvider.$get().checkAccessWithRole();
+        });
+    }
+ 
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
+        controller: 'MainCtrl'          
       }) 
       //Rutas front-end PROMOTORES *******************
       .when('/promotores', {
@@ -68,9 +144,13 @@ angular.module('promotorApp', [
            //PROBLEM: if the user is NOT logged in the http request still happens (in Chrome dev tools we can see data)
            //check: authFactoryProvider.$get().checkPermissions
 
-           //
-           check: authFactoryProvider.$get().checkAccess
+           //PROBLEM: if the user is logged and we open this route directly in a new browser tab 
+           // it will redirect to the login although we are already logged (because this executes BEFORE
+           // the call to the back-end in the "run" method finishes
+           //check: authFactoryProvider.$get().checkAccess
 
+           //Para forzar que se ejecute DESPUES de la consulta al backend que hacemos en el RUN 
+           check: chainedCheck 
          }   
       })
       .when('/promotor/create', {
@@ -78,7 +158,8 @@ angular.module('promotorApp', [
         controller: 'PromotorAddCtrl',
         resolve:{
            //check: authFactoryProvider.$get().checkPermissions 
-           check: authFactoryProvider.$get().checkAccess
+           //check: authFactoryProvider.$get().checkAccess
+           check: chainedCheck 
         }  
       })
       .when('/promotor/detail/:id', {
@@ -86,7 +167,8 @@ angular.module('promotorApp', [
         controller: 'PromotorDetailCtrl',
         resolve:{
            //check: authFactoryProvider.$get().checkPermissions 
-           check: authFactoryProvider.$get().checkAccess
+           //check: authFactoryProvider.$get().checkAccess
+           check: chainedCheck 
         }  
       })
       .when('/promotor/delete/:id', {
@@ -94,7 +176,8 @@ angular.module('promotorApp', [
         controller: 'PromotorDeleteCtrl',
         resolve:{
            //check: authFactoryProvider.$get().checkPermissions 
-           check: authFactoryProvider.$get().checkAccess
+           //check: authFactoryProvider.$get().checkAccess
+           check: chainedCheck 
         }  
       })
       .when('/promotor/edit/:id', {
@@ -102,7 +185,8 @@ angular.module('promotorApp', [
         controller: 'PromotorEditCtrl',
         resolve:{
            //check: authFactoryProvider.$get().checkPermissions 
-           check: authFactoryProvider.$get().checkAccess
+           //check: authFactoryProvider.$get().checkAccess
+           check: chainedCheck 
         } 
       })
       //Rutas front-end OBRAS ***********************
@@ -111,7 +195,8 @@ angular.module('promotorApp', [
         controller: 'ObrasCtrl',
         resolve:{
            //check: authFactoryProvider.$get().checkPermissions 
-           check: authFactoryProvider.$get().checkAccess
+           //check: authFactoryProvider.$get().checkAccess
+           check: chainedCheck 
         }  
       })
       .when('/obraspromotor/:id', {
@@ -119,7 +204,8 @@ angular.module('promotorApp', [
         controller: 'ObrasPromotorCtrl',
         resolve:{
            //check: authFactoryProvider.$get().checkPermissions 
-           check: authFactoryProvider.$get().checkAccess
+           //check: authFactoryProvider.$get().checkAccess
+           check: chainedCheck 
         }  
       })
       .when('/obrapromotor/:id/create', {
@@ -127,7 +213,8 @@ angular.module('promotorApp', [
         controller: 'ObraAddCtrl',
         resolve:{
            //check: authFactoryProvider.$get().checkPermissions
-           check: authFactoryProvider.$get().checkAccess 
+           //check: authFactoryProvider.$get().checkAccess 
+           check: chainedCheck 
         }
       })
       .when('/obrapromotor/:id/detail/:cod', {
@@ -135,7 +222,8 @@ angular.module('promotorApp', [
         controller: 'ObraDetailCtrl',
         resolve:{
            //check: authFactoryProvider.$get().checkPermissions 
-           check: authFactoryProvider.$get().checkAccess
+           //check: authFactoryProvider.$get().checkAccess
+           check: chainedCheck 
         }
       })
       .when('/obrapromotor/:id/delete/:cod', {
@@ -143,7 +231,8 @@ angular.module('promotorApp', [
         controller: 'ObraDeleteCtrl',
         resolve:{
            //check: authFactoryProvider.$get().checkPermissions
-           check: authFactoryProvider.$get().checkAccess 
+           //check: authFactoryProvider.$get().checkAccess 
+           check: chainedCheck 
         }
       })
       .when('/obrapromotor/:id/edit/:cod', {
@@ -151,7 +240,8 @@ angular.module('promotorApp', [
         controller: 'ObraEditCtrl',
         resolve:{
            //check: authFactoryProvider.$get().checkPermissions
-           check: authFactoryProvider.$get().checkAccess 
+           //check: authFactoryProvider.$get().checkAccess 
+           check: chainedCheck 
         }
       })
       //Rutas front-end USUARIOS ***********************
@@ -169,7 +259,12 @@ angular.module('promotorApp', [
         resolve:{
            //check: authFactoryProvider.$get().checkPermissions 
           // check: authFactoryProvider.$get().checkAccessWithUser($routeParams.username)  //No permite injectar $routeParams aqui
-           check: authFactoryProvider.$get().checkAccessWithUser
+          // check: authFactoryProvider.$get().checkAccessWithUser
+          check: function($rootScope){
+            $rootScope.currentUserPromise.then(function(sessUsername) {
+              authFactoryProvider.$get().checkAccessWithUser();
+            });
+          }
         }
       })
       .when('/admin', { //Ruta al panel de administracion
@@ -177,7 +272,8 @@ angular.module('promotorApp', [
         controller: 'UserAdminCtrl',
         resolve:{
            //check: authFactoryProvider.$get().checkUserRole
-           check: authFactoryProvider.$get().checkAccessWithRole 
+           //check: authFactoryProvider.$get().checkAccessWithRole 
+           check: chainedCheckForRole
         }
       })
       .when('/user/delete/:username', { 
@@ -185,7 +281,8 @@ angular.module('promotorApp', [
         controller: 'UserDeleteCtrl',
         resolve:{
            //check: authFactoryProvider.$get().checkUserRole 
-           check: authFactoryProvider.$get().checkAccessWithRole 
+           //check: authFactoryProvider.$get().checkAccessWithRole 
+           check: chainedCheckForRole
         }
       })
       .otherwise({
@@ -195,84 +292,29 @@ angular.module('promotorApp', [
     }) //config(function ($routeProvider)
 
 
-  /*
-  .config(function ($routeProvider) {
 
-    $routeProvider
-      .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
-      }) 
-      //Rutas front-end PROMOTORES *******************
-      .when('/promotores', {
-        templateUrl: 'views/promotores.html',
-        controller: 'PromotoresCtrl'
-      })
-      .when('/promotor/create', {
-        templateUrl: 'views/promotor-add.html',
-        controller: 'PromotorAddCtrl'
-      })
-      .when('/promotor/detail/:id', {
-        templateUrl: 'views/promotor-detail.html',
-        controller: 'PromotorDetailCtrl'
-      })
-      .when('/promotor/delete/:id', {
-        templateUrl: 'views/promotor-delete.html',
-        controller: 'PromotorDeleteCtrl' 
-      })
-      .when('/promotor/edit/:id', {
-        templateUrl: 'views/promotor-edit.html',
-        controller: 'PromotorEditCtrl'
-      })
-      //Rutas front-end OBRAS ***********************
-      .when('/obrasAll', {
-        templateUrl: 'views/obras-all.html',
-        controller: 'ObrasCtrl'
-      })
-      .when('/obraspromotor/:id', {
-        templateUrl: 'views/obras.html',
-        controller: 'ObrasPromotorCtrl'
-      })
-      .when('/obrapromotor/:id/create', {
-        templateUrl: 'views/obra-add.html',
-        controller: 'ObraAddCtrl'
-      })
-      .when('/obrapromotor/:id/detail/:cod', {
-        templateUrl: 'views/obra-detail.html',
-        controller: 'ObraDetailCtrl'
-      })
-      .when('/obrapromotor/:id/delete/:cod', {
-        templateUrl: 'views/obra-delete.html',
-        controller: 'ObraDeleteCtrl' 
-      })
-      .when('/obrapromotor/:id/edit/:cod', {
-        templateUrl: 'views/obra-edit.html',
-        controller: 'ObraEditCtrl'
-      })
-      //Rutas front-end USUARIOS ***********************
-      .when('/user/create', {
-        templateUrl: 'views/user-register.html',
-        controller: 'UserAddCtrl'
-      })
-      .when('/user/login', {
-        templateUrl: 'views/user-login.html',
-        controller: 'UserLoginCtrl'
-      })
-      .when('/user/:username', { //lo usamos para detalle y borrado.
-        templateUrl: 'views/user-detail.html',
-        controller: 'UserDetailCtrl'
-      })
-      .when('/admin', { //Ruta al panel de administracion
-        templateUrl: 'views/user-admin.html',
-        controller: 'UserAdminCtrl'
-      })
-      .when('/user/delete/:username', { 
-        templateUrl: 'views/user-delete.html',
-        controller: 'UserDeleteCtrl'
-      })
-      .otherwise({
-        redirectTo: '/home'
+/* Asynchronously Bootstrapping AngularJS Applications with Server-Side Data */
+/*  ;
+    
+  fetchData().then(bootstrapApplication);
+
+  function fetchData() {
+      var initInjector = angular.injector(["ng"]);
+      var $http = initInjector.get("$http");
+
+      // store it in an Angular constant called 'config' which we can access later 
+      // within all of our controllers, services, and so on
+      return $http.get("/auth/sessionUsername").then(function(response) {
+          myApplication.constant("config", response.data);
+        }, function(errorResponse) {
+          // Handle error case
+        });
+  }
+
+  function bootstrapApplication() {
+      angular.element(document).ready(function() {
+          angular.bootstrap(document, ["promotorApp"]);
       });
-      
-    })
-    */  
+  }
+}());
+*/

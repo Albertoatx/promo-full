@@ -4,6 +4,7 @@
   "description": "Creacion de una API Restful para gestion de promotores y obras",
   "main": "appback.js",
   "scripts": {
+    "start": "node appback",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "AlbertoMM",

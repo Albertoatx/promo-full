@@ -42,6 +42,17 @@ function sessionCheck(request, response, next) {
         //response.status(401).send('sessionCheck: authorization failed');
 }
 
+
+function trackSession(operativa, request) {
+    console.log("En '" + operativa + "' - VALOR request.session es: " );
+    console.log(request.session);
+    console.log("VALOR request.sessionID: "     + request.sessionID);
+    console.log("VALOR request.session.user: "  + request.session.user);
+    console.log("--------------------------------------------------------------");
+    console.log("");
+}
+
+
 /* ---------------------------------------------------------------------------------------------------------------------------------
 /* RUTAS ExpressJS para el BACK-END, proporcionamos API REST para realizar operaciones CRUD sobre nuestro Modelo (Promotores)
 /* Comandos Mongoose: Save, Remove, Update, Find, FindById, FindOne,.
@@ -68,11 +79,13 @@ router.get('/', function(req, res) {
 
 //Listado de promotores
 router.get('/promotores', function(request, response) {
+    trackSession("PROMOTORES CONSULTA", request);
     return Promotor.find({}, function(err, promotores) {  
         if (!err) {
             return response.send(promotores);
         } else {
-            return response.send(500, err);
+            //return response.send(500, err);
+            return response.status(500).send(err);
         }
     });
 });
@@ -103,7 +116,8 @@ router.get('/promotores/limit', function(request, response) {
         if (!err) {
             return response.send(promotores);
         } else {
-            return response.send(500, err);
+            //return response.send(500, err);
+            return response.status(500).send(err);
         }
     }); 
 });
@@ -117,7 +131,8 @@ router.get('/promotores/find/:name', function(req, res) {
         if (!err) {
             return res.send(promotores);
         } else {
-            return res.send(500, err);
+            //return res.send(500, err);
+            return res.status(500).send(err);
         }
     });
 });
@@ -147,7 +162,8 @@ router.get('/promotores/count', function(req, res) {
             return res.json(count);
 
         } else {
-            return res.send(500, err);
+            //return res.send(500, err);
+            return res.status(500).send(err);
         }
     });
 });
@@ -164,28 +180,48 @@ router.post('/promotores/add', sessionCheck, function(request, response) {
             codpostal: request.body.codpostal
     }; */
 
-    var promotor = new Promotor({
-        codigop: request.body.codigop,
-        nombrep: request.body.nombrep,
-        creado_por: request.session.user,
-        actualizado_por: '',
-        cifp: request.body.cifp,
-        telefp: request.body.telefp,
-        emailp: request.body.emailp,
-        direcp: request.body.direcp,
-        //direcp: direccion,                   //Guardaba objeto vacio
-        //direcp.callep: request.body.callep,  //Esto da error de compilacion
-        creado_el: new Date(Date.now())
-    });
-    console.log('Intentando guardar un promotor');
-    console.log(request.body);
-    promotor.save(function(err) {  //save the data into the Promotor collection
-        if (!err) {
-            return response.send(200, promotor);
-        } else {
-            console.log('Intento guardado: entra rama error');
-            return response.send(500, err);
-        }
+    var codpromo = request.body.codigop;
+
+    // find a user in mongo with provided username
+	Promotor.findOne({ 'codigop' :  codpromo }, function(err, promotor) {
+				
+		if (err){
+			return response.status(500).send("Error al intentar crear un nuevo promotor " + err);
+		}
+
+		// if the promotor already exists we must not create it
+		if (promotor) {
+			return response.status(401).send("Ese código de promotor ya existe en el sistema");
+		} else {
+
+            trackSession("PROMOTOR ALTA", request);
+            //console.log(request.body);
+
+            var promotor = new Promotor({
+                codigop: request.body.codigop,
+                nombrep: request.body.nombrep,
+                creado_por: request.session.user,
+                actualizado_por: '',
+                cifp: request.body.cifp,
+                telefp: request.body.telefp,
+                emailp: request.body.emailp,
+                direcp: request.body.direcp,
+                //direcp: direccion,                   //Guardaba objeto vacio
+                //direcp.callep: request.body.callep,  //Esto da error de compilacion
+                creado_el: new Date(Date.now())
+            });
+            
+            promotor.save(function(err) {  //save the data into the Promotor collection
+                if (!err) {
+                    //return response.send(200, promotor);
+                    return response.status(200).send(promotor);
+                } else {
+                    console.log('Intento guardado: entra rama error');
+                    //return response.send(500, err);
+                    return response.status(500).send(err);
+                }
+            });
+        } //else
     });
 });
 
@@ -193,6 +229,7 @@ router.post('/promotores/add', sessionCheck, function(request, response) {
 router.route('/promotores/:id')
     //gets specified promoter
     .get(function(req, res){
+        trackSession("PROMOTOR DETALLE", req);
         Promotor.findById(req.params.id, function(err, promotor){
             if(err)
                 res.send(err);
@@ -202,7 +239,7 @@ router.route('/promotores/:id')
     //updates specified promoter
     .put(sessionCheck, function(req, res){
     //.put(function(req, res){
-
+        trackSession("PROMOTOR ACTUALIZAR", req);
         Promotor.findById(req.params.id, function(err, promotor){
             if(err)
                 res.send(err);
@@ -228,6 +265,7 @@ router.route('/promotores/:id')
     //deletes the promoter
     .delete(sessionCheck, function(req, res) {
     //.delete(function(req, res) {
+        trackSession("PROMOTOR BORRADO", req);
         Promotor.remove({
             _id: req.params.id
         }, function(err) {
@@ -253,25 +291,29 @@ router.route('/promotores/:id')
 //Listado de todas las obras existentes, sea cual sea su promotor 
 router.get('/promociones', function(request, response) {
 
+    trackSession("OBRAS LISTADO", request);
+
     //db.Users.aggregate( [{$unwind:"$Photos"},{$sort: {"Photos.created":-1},{$limit: 10}] );
 
     return Promotor.aggregate([{$unwind:"$promociones"}], function(err, data) {  
         if (!err) {
             return response.send(data);  //Las obras de ese promotor
         } else {
-            return response.send(500, err);
+            //return response.send(500, err);
+            return response.status(500).send(err);
         }
     });
 });
 
 //OK - Listar todas las obras de un promotor
 router.get('/promociones/:id', function(request, response) {
-
+    trackSession("OBRA DETALLE", request);
     return Promotor.findById(request.params.id, function(err, promotor) {  
         if (!err) {
             return response.send(promotor.promociones);  //Las obras de ese promotor
         } else {
-            return response.send(500, err);
+            //return response.send(500, err);
+            return response.status(500).send(err);
         }
     });
 });
@@ -279,7 +321,7 @@ router.get('/promociones/:id', function(request, response) {
 
 //OK - Mostrar solo 1 determinada obra de un promotor (an embedded document by id)
 router.get('/promociones/:id/:cod', function(req, res) { 
-
+    trackSession("OBRA de un determinado PROMOTOR", req);
     var promo_id = req.params.id,
         obra_id = req.params.cod;
 
@@ -298,7 +340,7 @@ router.get('/promociones/:id/:cod', function(req, res) {
 //OK - Añadir 1 obra a 1 promotor (Adding an embedded document to an array)
 router.post('/promociones/add/:id', sessionCheck, function(req, res) { 
 //router.post('/promociones/add/:id', function(req, res) { 
-
+    trackSession("OBRA ALTA", req);
     Promotor.findById(req.params.id, function(err, promotor){
 
         if(err)
@@ -328,6 +370,7 @@ router.post('/promociones/add/:id', sessionCheck, function(req, res) {
 router.post('/promociones/:id/:cod', sessionCheck, function(req, res) {
 //router.post('/promociones/:id/:cod', function(req, res) {  
 
+    trackSession("BORRADO DE UNA OBRA DE UN PROMOTOR", req);
     var promo_id = req.params.id,
         obra_id = req.params.cod;
 
@@ -369,6 +412,8 @@ router.post('/promociones/:id/:cod', sessionCheck, function(req, res) {
 router.put('/promociones/:id/:cod', sessionCheck, function(req, res) { 
 //router.put('/promociones/:id/:cod', function(req, res) { 
 
+    trackSession("ACTUALIZAR UNA OBRA DE UN PROMOTOR", req);
+    
     var promo_id = req.params.id,
         obra_id  = req.params.cod;
 

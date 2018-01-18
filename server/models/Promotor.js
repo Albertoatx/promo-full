@@ -18,7 +18,7 @@ var Promociones = new mongoose.Schema({
 // Create the Schema.
 var PromotorSchema = new mongoose.Schema({
  // codigop: {type: ObjectId, required: true},
-  codigop: {type: String, required: true},
+  codigop: {type: String, required: true, unique: true},
   nombrep: {type: String, required: true},
   creado_por: {type: String},
   actualizado_por: {type: String},

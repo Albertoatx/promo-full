@@ -28,9 +28,10 @@ angular.module('promotorApp')
                 //$http devuelve una promesa
                 getPromotores: function () {
                     //OLD VERSION
-                    //return $http.get('/api/promotores');  //Llama al servicio web REST del backend encargado de atender la ruta "/api/pages"
+                    return $http.get('/api/promotores');  //Llama al servicio web REST del backend encargado de atender la ruta "/api/pages"
 
                     //NEW VERSION (uses $q to cached data)
+                    /*
                     // Create a deferred operation.
                     var deferred = $q.defer();
                     
@@ -51,6 +52,7 @@ angular.module('promotorApp')
                     }
  
                     return deferred.promise; //return the promise we've built with deferred
+                    */
                 },
                 savePromotor: function (promotorData) {
                     return $http.post('/api/promotores/add', promotorData);
@@ -262,9 +264,12 @@ angular.module('promotorApp')
                 renewPassword: function (data) {
                     return $http.post('/auth/newpassword', data);
                 },
+                isLoggedIn: function () {
+                    return $http.get('/auth/sessionUsername');
+                },
                 //He inyectado el $rootscope y $location para poder usarlos desde la factoria
                 //PROBLEMA: Aunque no permita ir a la ruta si que sigue haciendo peticion http y consultando datos
-                
+                /*
                 checkPermissions: function () {
                     if ($rootScope.authenticated === true) {
                         console.log("User has permissions");
@@ -289,8 +294,14 @@ angular.module('promotorApp')
                         alert("You don't have access here! You must log in with admin privileges");
                         $location.path('user/login');
                     }
-                }, 
+                }, */
                 checkAccess: function (){
+                    console.log("Entra en metodo checkAcess");
+                    console.log("current user: "  + $rootScope.current_user);
+                    console.log("administrator: " + $rootScope.administrator);
+                    console.log("authenticated: " + $rootScope.authenticated);
+                    console.log("-----------------------------------------------");
+
                     // Create a deferred operation (this object contains the promise we'll return)
                     var deferred = $q.defer(); 
 
@@ -329,6 +340,12 @@ angular.module('promotorApp')
                     return deferred.promise;  //Return the promise
                 },
                 checkAccessWithRole: function (){
+                    console.log("Entra en metodo checkAccessWithRole (admin)");
+                    console.log("current user: "  + $rootScope.current_user);
+                    console.log("administrator: " + $rootScope.administrator);
+                    console.log("authenticated: " + $rootScope.authenticated);
+                    console.log("-----------------------------------------------");
+
                     // Create a deferred operation (this object contains the promise we'll return)
                     var deferred = $q.defer(); 
 

@@ -28,6 +28,22 @@ function sessionCheck(request, response, next) {
         //response.status(401).send('sessionCheck: authorization failed');
 }
 
+function trackSession(operativa, request) {
+    console.log("En '" + operativa + "' - VALOR request.session es: " );
+    console.log(request.session);
+    console.log("VALOR request.sessionID: "     + request.sessionID);
+    console.log("VALOR request.session.user: "  + request.session.user);
+    console.log("--------------------------------------------------------------");
+    console.log("");
+}
+
+
+router.get('/sessionUsername', function (request, response){
+	if (request.session.user) {
+		return response.status(200).send(request.session.user);
+	} else
+	    return response.status(200).send('');
+});
 
 
 /* RUTAS para nuestras operaciones CRUD sobre la colección USUARIO DE Mongo. Proporcionamos el siguiente API */
@@ -73,14 +89,21 @@ router.post('/signup', function(request, response) {
 			newUser.save(function(err) {
 
 		        if (!err) {
+					
+					request.session.user = newUser.username;
+					trackSession("SIGN UP", request);
+					return response.status(200).send(newUser.username);
+					
 		        	//return response.status(200).send(newUser.username, "usuario creado ok"); //para que aparezca en pantalla el usuario
-		            //return response.send('User successfully created');
+					//return response.send('User successfully created');
+					/*
 			        request.session.regenerate(function() { 
 			        	console.log('Entra en regenerate para crear la sesion al registrar usuario');
-			            request.session.user = newUser.username;
+						request.session.user = newUser.username;
+						trackSession("SIGN UP", request);
 			            return response.send(newUser.username);  
 			        });
-
+					*/
 		        } else {
 		        	console.log('Error in Saving user: '+ err);  
 		            return response.send(err);
@@ -115,14 +138,22 @@ router.post('/login', function(request, response) {
 	    //if (username == usr.username && bcrypt.compareSync(password,usr.password)) { 
 	    //if (username == user.username && isValidPassword(user, password)) { 
 		if (isValidPassword(user, password)) { 
-	        //Crea la sesion de usuario 
+            
+			request.session.user = username;
+			trackSession("LOGIN", request);
+			return response.status(200).send(username);
+            
+			//Genera otra sesion de usuario 
+			/*
 	        request.session.regenerate(function() {  //cannot read property "regenerate" of undefined
 	        	console.log('Entra en regenerate para la sesion');
 	            request.session.user = username;
 	            //request.session.success = 'Authenticated as ' + user.username + ' click to <a href="/logout">logout</a>. ' + ' You may now access <a href="/restricted">/restricted</a>.';
-	            return response.send(username);  //DA ERROR (Can't set headers after they are sent)
-	        });  
-	        //return response.status(200).send(username); //Fallaba por estar haciendo 2 returns en callback
+				trackSession("LOGIN", request);
+				return response.status(200).send(username);  //DA ERROR (Can't set headers after they are sent)
+			});  
+			*/
+			//return response.status(200).send(username); //Fallaba por estar haciendo 2 returns en callback
 
 	    } else {
 	    	return response.status(401).send("La contraseña introducida no es válida");
@@ -217,6 +248,7 @@ router.get('/failure', function(req, res){
 
 //Listado de usuarios (solo deberia verlo el administrador)
 router.get('/users', function(request, response) {
+	trackSession("LISTADO de USUARIOS", request);
     return User.find({}, function(err, users) {  
         if (!err) {
             return response.send(users);
@@ -231,6 +263,7 @@ router.get('/users', function(request, response) {
 router.route('/users/:username')
 	    //gets specified promoter
     .get(function(request, response){
+		trackSession("USUARIO DETALLE", request);
         User.findOne({username:request.params.username}, function(err, user){
             if(err)
                 response.send(err);
@@ -242,6 +275,8 @@ router.route('/users/:username')
 router.route('/users/:id')
 	.delete(sessionCheck, function(request, response) {
     //.delete(function(request, response) {
+
+		trackSession("USUARIO BORRAR", request);
         User.remove({
             _id: request.params.id
         }, function(err) {
@@ -254,6 +289,7 @@ router.route('/users/:id')
     //updates specified
     .put(sessionCheck, function(request, response){
     //.put(function(request, response){
+		trackSession("USUARIO ACTUALIZAR", request);
         User.findById(request.params.id, function(err, user){
             if(err)
                 response.send(err);

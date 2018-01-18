@@ -65,7 +65,8 @@ var apiAuth = require('./controllers/AutenticacionCtrl');
 //      mpromise (mongoose's default promise library) is deprecated, 
 //      plug in your own promise library instead: http://mongoosejs.com/docs/promises.html
 mongoose.Promise = global.Promise; //Usar una libreria de promesas que no esta deprecated
-mongoose.connect('mongodb://localhost/obrasdb');
+//mongoose.connect('mongodb://localhost/obrasdb');
+mongoose.connect('mongodb://localhost/obrasdb', {useMongoClient: true});
 mongoose.connection.once('open', function() {
   
   // Load all the models
