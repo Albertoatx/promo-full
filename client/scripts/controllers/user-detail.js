@@ -15,7 +15,7 @@ angular.module('promotorApp')
 
 			  $scope.userDatos = {}; //Vaciamos el objeto movie del $scope
 			  $scope.userDatos.username = $routeParams.username;
-			  console.log($scope.userDatos.username);
+			  //console.log($scope.userDatos.username);
 
 			  $scope.isError  = false;
 			  $scope.isOk     = false;      
@@ -28,14 +28,14 @@ angular.module('promotorApp')
 		            function(response) {
 		                $scope.userDatos = response.data;
 		                $scope.userDatos.datebirth = new Date($scope.userDatos.datebirth);
-		                $log.info($scope.userDatos);
+		                //$log.info($scope.userDatos); //saca trazas en consola navegador
 		            },
 		            function(err) {
 		                $log.error(err);
 		            }
 	          );
 
-              console.log($scope.userDatos);
+              //console.log($scope.userDatos);
               var username = $scope.userDatos.username;
 
 
@@ -44,8 +44,8 @@ angular.module('promotorApp')
             	authFactory.editUser($scope.userDatos._id, $scope.userDatos).then(
                     function(res) {
 
-                        console.log('ACTUALIZACION DE USUARIO OK')
-                        console.log(res.data);
+                        //console.log('ACTUALIZACION DE USUARIO OK')
+                        //console.log(res.data);
                         $scope.isOk = true;
                         $scope.activado = false;
                         $scope.okMsg = 'Se han actualizado sus datos de usuario exitosamente';

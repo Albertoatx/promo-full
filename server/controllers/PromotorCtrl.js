@@ -44,12 +44,14 @@ function sessionCheck(request, response, next) {
 
 
 function trackSession(operativa, request) {
+    /*
     console.log("En '" + operativa + "' - VALOR request.session es: " );
     console.log(request.session);
     console.log("VALOR request.sessionID: "     + request.sessionID);
     console.log("VALOR request.session.user: "  + request.session.user);
     console.log("--------------------------------------------------------------");
-    console.log("");
+    console.log(""); 
+    */
 }
 
 
@@ -157,7 +159,7 @@ router.get('/promotores/count', function(req, res) {
     //return Promotor.count({ type: 'jungle' }, function (err, count) {
     return Promotor.count(function (err, count) {
         if (!err) {
-            console.log('there are %s promoters', count);
+            //console.log('there are %s promoters', count);
             //return res.send(count);
             return res.json(count);
 
@@ -216,7 +218,7 @@ router.post('/promotores/add', sessionCheck, function(request, response) {
                     //return response.send(200, promotor);
                     return response.status(200).send(promotor);
                 } else {
-                    console.log('Intento guardado: entra rama error');
+                    //console.log('Intento guardado: entra rama error');
                     //return response.send(500, err);
                     return response.status(500).send(err);
                 }
@@ -244,7 +246,7 @@ router.route('/promotores/:id')
             if(err)
                 res.send(err);
 
-            console.log(req.body);
+            //console.log(req.body);
             promotor.codigop = req.body.codigop;
             promotor.nombrep = req.body.nombrep;
             promotor.actualizado_el = new Date(Date.now());
@@ -325,7 +327,7 @@ router.get('/promociones/:id/:cod', function(req, res) {
     var promo_id = req.params.id,
         obra_id = req.params.cod;
 
-    console.log('Detalle de la obra concreta: ' + obra_id);
+    //console.log('Detalle de la obra concreta: ' + obra_id);
     //Hacemos una proyeccion para que se quede solo con la obra especificada
     Promotor.findOne({_id: promo_id, 'promociones.codigoobra': obra_id}, {'promociones.$': 1}, function(err, promocion){ 
 
@@ -358,7 +360,7 @@ router.post('/promociones/add/:id', sessionCheck, function(req, res) {
             if(err)
                 res.send(err);
 
-            console.log('Obra incluida en el promotor exitosamente');
+            //console.log('Obra incluida en el promotor exitosamente');
             res.json(promotor);
         });
     });
@@ -417,8 +419,8 @@ router.put('/promociones/:id/:cod', sessionCheck, function(req, res) {
     var promo_id = req.params.id,
         obra_id  = req.params.cod;
 
-    console.log('Codigo de la obra a actualizar: ' + obra_id);
-    console.log(req.body);
+    //console.log('Codigo de la obra a actualizar: ' + obra_id);
+    //console.log(req.body);
 
     Promotor.findOneAndUpdate({_id: promo_id, 'promociones.codigoobra': obra_id},
     {
@@ -478,7 +480,7 @@ router.post('/promociones/:id/', sessionCheck, function(req, res) {
             if(err)
                 res.send(err);
 
-            console.log('Obras borradas exitosamente');
+            //console.log('Obras borradas exitosamente');
             res.json(promotor);
         });       
     });   

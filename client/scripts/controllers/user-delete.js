@@ -16,8 +16,8 @@ angular.module('promotorApp')
             $scope.isError  = false;      
             $scope.errorMsg = ''; 
 
-            console.log('BORRADO DE USUARIO');
-            console.log($routeParams);
+            //console.log('BORRADO DE USUARIO');
+            //console.log($routeParams);
             var username = $routeParams.username;
 
             if ($rootScope.administrator) {

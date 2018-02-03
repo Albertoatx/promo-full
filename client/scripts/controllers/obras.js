@@ -13,7 +13,7 @@ angular.module('promotorApp')
 
       function($scope, $log, promotoresFactory, $location, $routeParams, $rootScope) {
 
-          console.log($rootScope);
+          //console.log($rootScope);
           
           $scope.promotorid = $routeParams.id;
           /*$scope.promotorname= $routeParams.nombre;*/

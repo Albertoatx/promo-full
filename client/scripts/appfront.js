@@ -21,13 +21,14 @@ angular.module('promotorApp', [
    //Pensar en "Run" como el controlador inicial (para el index.html) donde se fijan variables en tiempo de inicio de la aplicacion.
    //Only instances and constants can be injected into run blocks: This is to prevent further system configuration during application run time.
    //Run blocks are the closest thing in Angular to the main method. A run block is the code which needs to run to kickstart the application. 
-  .run(function($rootScope, $log, $location, authFactory) { 
+  .run(function($rootScope, $log, $location, authFactory, $interval) { 
       console.log("Se esta ejecutando el metodo de arranque RUN");
-      $rootScope.appAlreadyRun = false;
       $rootScope.administrator = false;
       $rootScope.authenticated = false;
       $rootScope.current_user = '';
+      $rootScope.counterEntry = 0; //marcar en $interval si no estamos logeados (0) o si lo estamos (1)
 
+      // ------------------------------------------------------------------------
       // La llamada al back-end devolvera una promesa (.then devuelve una promesa) 
       // que debo forzar que se ejecute ANTES que el "resolve" del enrutado (debo encadenarlas)
       // Para eso crear promesa y añadirla al $rootScope dentro del 'root' controller (el .run)
@@ -49,7 +50,7 @@ angular.module('promotorApp', [
               if (sessionUsername === 'admin') 
                   $rootScope.administrator = true;
 
-              console.log('El usuario ' + sessionUsername + ' ya se encontraba previamente logeado!');
+              //console.log('El usuario ' + sessionUsername + ' ya se encontraba previamente logeado!');
             } 
             //la promesa puede devolver algo para enlazar como parametro a la sgte promesa
             return sessionUsername; 
@@ -57,9 +58,152 @@ angular.module('promotorApp', [
         function(err) {
             $log.error(err);
       });
+
+      // ------------------------------------------------------------------------
+      // Recordar que cada navegador web tendra 1 sesion compartida para todas sus pestañas
+      // $interval: ejecuta la funcion de forma repetida cada cierto intervalo de tiempo 
+      // Util para el control de distintas pestañas de un mismo navegador 
+      //  (que todas tengan el usuario logeado en cuanto nos logemos en 1 de las pestañas)
+      //Realmente este $interval solo llama al back-end cuando se cumple la condicion del IF (NO estar logeados)
+      /*
+      var intervalPromiseLogin = $interval(function(){
+
+        //console.log("Se ejecuta la funcion $interval");
+        //console.log("$rootScope.counterEntry: " + $rootScope.counterEntry);
+
+        // NO estamos logeados (entonces hacer continuas llamadas al back-end hasta detectar logeo)
+        if ($rootScope.counterEntry === 0) { 
+          //console.log("$interval para detectar LOGIN y aplicarlo a todas pestañas del navegador");
+          authFactory.isLoggedIn().then(
+            function(response) {
+
+              var sessionUser = response.data;
+
+              //Nos hemos logeamos (backend devuelve sesion) -> las otras pestañas se enteran 
+              // ya que ejecutan su propio $interval y tendrán el 'sessionUser' sincronizado (del 'back-end')
+              if (sessionUser && sessionUser != '') { 
+                $rootScope.current_user = sessionUser; 
+                $rootScope.authenticated = true;
+                $rootScope.counterEntry++;  // MUY IMPORTANTE (aqui para ser conpartido por el $interval del logout)
+
+                if (sessionUser === 'admin') 
+                  $rootScope.administrator = true;
+
+                //console.log('$interval LOGIN: El usuario ' + sessionUser + ' se encuentra logeado!');
+                $location.path('/promotores');
+
+                //stopIntervalExec();
+              }
+            },
+            function(err) {
+              $log.error(err);
+            }
+          )
+        } // end if 
+      }, 8000); //cada 8 segundos
+      
+    
+      //Cancelar la ejecución de $interval cuando bajo cierta condicion
+      //En nuestro caso no interesa hacerlo (permitiria logearse en distintas pestañas con distintos usuarios)
+      var stopIntervalExec = function() {
+        if (angular.isDefined(intervalPromiseLogin) && $rootScope.current_user != '') {
+          $interval.cancel(intervalPromiseLogin);
+          intervalPromiseLogin = undefined;
+        }
+      };
+
+
+      // ------------------------------------------------------------------------
+      //Realmente este $interval solo llama al back-end cuando se cumple la condicion del IF (estamos logeados)
+      //pero es necesario que este a nivel raiz del RUN (para que se ejecute en todas las pestañas)
+      // (si se pusiese asociado a algo dentro del 'signout solo afectaria a la pestaña donde se haga signout)
+      var intervalPromiseSignout = $interval(function(){
+
+        //PROBLEMA, cada pestaña del navegador tendra distintas copias de las variables en rootScope
+        //Para sincronizarlas NO podemos hacer STOP del $interval ya que si paramos el $interval
+        //no tendriamos el valor actualizado de la sesión en las distintas pestañas
+        // (al parar el $interval no podemos acceder al back-end desde el RUN para tener 
+        //  el mismo current_user en las distintas pestañas). Esto sería problemático ya que 
+        // permitiria salir de sesion y luego volver a entrar con distintos usuarios en dist. pestañas
+
+        //console.log("current_user :" + $rootScope.current_user); 
+        //console.log("$rootScope.counterEntry: " + $rootScope.counterEntry);
+
+        // SI estamos logeados (entonces hacer continuas llamadas al back-end hasta detectar logout)
+        if ($rootScope.counterEntry > 0) {  
+          //console.log("$interval para detectar LOGOUT y aplicarlo a todas pestañas del navegador");
+          authFactory.isLoggedIn().then(
+            function(response) {
+              
+              var sessionUser = response.data;
+              
+              //Nos hemos deslogeado (backend no devuelve user en sesion) -> las otras pestañas se enteran 
+              // ya que ejecutan su propio $interval y tendrán el 'sessionUser' sincronizado (del 'back-end')
+              if (sessionUser === '') {  
+                
+                $rootScope.administrator = false;
+                $rootScope.authenticated = false;
+                $rootScope.current_user = '';
+                $rootScope.counterEntry = 0;
+                $location.path('/');
+                //console.log('$interval LOGOUT: no hay usuario en sesion');
+
+                //stopIntervalSignoutExec();
+              }
+            },
+            function(err) {
+              $log.error(err);
+            }
+          )
+        }
+      }, 8000); //cada 8 segundos
       
 
-      /*
+      //Cancelar la ejecución de $interval cuando bajo cierta condicion
+      //En nuestro caso no interesa hacerlo (permitiria logearse en distintas pestañas con distintos usuarios)
+      var stopIntervalSignoutExec = function() {
+        if (angular.isDefined(intervalPromiseSignout)) {
+          $interval.cancel(intervalPromiseSignout);
+          intervalPromiseSignout = undefined;
+        }
+      }; 
+      */
+
+      //observar los cambios que se produzcan sobre la variable 'current-user'
+      $rootScope.$watch('current_user', function() {
+        //console.log("Imprimiendo desde el $watch de current_user");
+
+        //si esta vacia y viene de un cambio significa que antes tenia datos
+        /* if ($rootScope.current_user === '' && $rootScope.counterEntry > 1){
+        } */
+      });
+
+      // ------------------------------------------------------------------------
+      //El método para logout lo hago global para que podamos acceder a el en todo momento
+      $rootScope.signout = function(){
+        //$http.get('/auth/logout'); //Podemos llamar directo sin usar factoria no tenemos una pantalla y controlador propios
+
+        authFactory.logout().then(
+          function(res, err) {
+              //$cookies.loggedInUser = res.data;
+              $rootScope.administrator = false;
+              $rootScope.authenticated = false;
+              $rootScope.current_user = '';
+              $location.path('/');
+          },
+          function(err) {
+              //console.log('Entra por la RAMA del error en el logout');
+              //$rootScope.authenticated = false;
+              //$rootScope.current_user = '';
+              $log.log(err);
+              //flashMessageService.setMessage(err.data);
+          }
+        );
+      }; //end signout 
+
+
+      /*------------------------------------------------------------------------
+      /* No lo he llegado a usar
       $rootScope.$on('$routeChangeStart', function(e, curr, prev) {
         if (curr.$$route && curr.$$route.resolve) {
           console.log("Metodo RUN con $routeChangeStart");
@@ -75,30 +219,6 @@ angular.module('promotorApp', [
       });
       */
 
-      //El método para logout lo hace global para que podamos acceder a el en todo momento
-      $rootScope.signout = function(){
-        //$http.get('/auth/logout'); //Podemos llamar directo sin usar factoria no tenemos una pantalla y controlador propios
-        
-        authFactory.logout().then(
-          function(res, err) {
-              //$cookies.loggedInUser = res.data;
-              $rootScope.administrator = false;
-              $rootScope.authenticated = false;
-              $rootScope.current_user = '';
-              $rootScope.appAlreadyRun = false;
-              $location.path('/');
-          },
-          function(err) {
-              console.log('Entra por la RAMA del error en el logout');
-              //$rootScope.authenticated = false;
-              //$rootScope.current_user = '';
-              $log.log(err);
-              //flashMessageService.setMessage(err.data);
-          }
-        );
-      }; //end signout 
-
-
   })
   //to inject a service in config you just need to call the Provider of the service by adding 'Provider' to it's name
  .config(function ($routeProvider, authFactoryProvider, $locationProvider) {
@@ -106,9 +226,10 @@ angular.module('promotorApp', [
     //$locationProvider.html5Mode(true);
 
     //Run controllers only after initialization (RUN method) is complete in AngularJS
+    //(to force that checkAccess() method is executed AFTER the asynch back-end query in the RUN ends 
     var chainedCheck = function($rootScope){
         $rootScope.currentUserPromise.then(function(sessUsername) {
-          console.log("ENTRA DENTRO del THEN para encadenar promesa con usuario " + sessUsername);
+          //console.log("ENTRA DENTRO del THEN para encadenar promesa con usuario " + sessUsername);
           authFactoryProvider.$get().checkAccess();
         });
     }
@@ -149,7 +270,7 @@ angular.module('promotorApp', [
            // the call to the back-end in the "run" method finishes
            //check: authFactoryProvider.$get().checkAccess
 
-           //Para forzar que se ejecute DESPUES de la consulta al backend que hacemos en el RUN 
+           //To avoid redirecting to the login page when we are alredy logged (when we try to open a route directly)
            check: chainedCheck 
          }   
       })

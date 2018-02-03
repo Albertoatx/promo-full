@@ -29,12 +29,14 @@ function sessionCheck(request, response, next) {
 }
 
 function trackSession(operativa, request) {
+	/*
     console.log("En '" + operativa + "' - VALOR request.session es: " );
     console.log(request.session);
     console.log("VALOR request.sessionID: "     + request.sessionID);
     console.log("VALOR request.session.user: "  + request.session.user);
     console.log("--------------------------------------------------------------");
-    console.log("");
+	console.log("");
+	*/
 }
 
 
@@ -68,7 +70,7 @@ router.post('/signup', function(request, response) {
 
 		// if the user already exists we must not create it
 		if (user) {
-			console.log('User already exists with username: '+username);
+			//console.log('User already exists with username: '+ username);
 			return response.status(401).send("Ese usuario ya existe en el sistema");
 			//return response.send(401, "User already exist");
 		} else {
@@ -105,11 +107,11 @@ router.post('/signup', function(request, response) {
 			        });
 					*/
 		        } else {
-		        	console.log('Error in Saving user: '+ err);  
+		        	//console.log('Error in Saving user: '+ err);  
 		            return response.send(err);
 		        }
 
-				console.log(newUser.username + ' Registration succesful');    	
+				//console.log(newUser.username + ' Registration succesful');    	
 			});
 		}
 	});
@@ -130,7 +132,7 @@ router.post('/login', function(request, response) {
 
 		// Username does not exist, log the error and redirect back
 		if (!user){
-			console.log('User Not Found '+ username);
+			//console.log('User Not Found '+ username);
 			return response.status(401).send("El usuario introducido no se encuentra en el sistema");
 			//return response.send(401, "Username " + username + " not found");	
 		}
@@ -140,6 +142,7 @@ router.post('/login', function(request, response) {
 		if (isValidPassword(user, password)) { 
             
 			request.session.user = username;
+			console.log('Sesion generada para el usuario ' + username);
 			trackSession("LOGIN", request);
 			return response.status(200).send(username);
             
@@ -181,13 +184,13 @@ router.get('/logout', function(request, response) {
 
 router.post('/newpassword', function(request, response) {
 
-	console.log('Entra en ruta /newpassword');
+	//console.log('Entra en ruta /newpassword');
 
     var username    = request.body.username;
     var oldpassword = request.body.oldpassword;
     var newpassword = request.body.newpassword;
 
-    console.log(request.body);
+    //console.log(request.body);
 
     if (username == undefined || oldpassword == undefined || newpassword == undefined) {
     	return response.status(500).send("No se ha enviado toda la informacion necesaria");
@@ -208,7 +211,7 @@ router.post('/newpassword', function(request, response) {
 			//Si la contraseña que quieres cambiar es la correcta
 			if (isValidPassword(user, oldpassword)) { 
 
-				console.log('Backend, cambiar password, id del usuario es: ' + user._id);
+				//console.log('Backend, cambiar password, id del usuario es: ' + user._id);
 
 				User.findById(user._id, function(err, user){
 		            if(err)

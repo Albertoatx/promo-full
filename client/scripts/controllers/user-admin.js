@@ -13,7 +13,7 @@ angular.module('promotorApp')
 
       function($scope, $log, authFactory, $location, $rootScope, $uibModal) {
 
-          console.log($rootScope.current_user);
+          //console.log($rootScope.current_user);
           $scope.numItemsPerPage = 10;
         
           //Llama al método "getUsers" de la API del front definido en "factorias.js" y que se comunica con el back
@@ -22,7 +22,7 @@ angular.module('promotorApp')
                     //En el $scope estarán los datos devueltos por el servicio REST a la factoria.       
                     $scope.usuarios   = response.data; 
                     $scope.countUsers = response.data.length;
-                    console.log($scope.countUsers);
+                    //console.log($scope.countUsers);
                 },
                 function(err) {
                     $log.error(err);
@@ -38,7 +38,7 @@ angular.module('promotorApp')
             $scope.user = user;                  //Como argumento llega el usuario seleccionado de la lista de usuarios
             
             console.log('usuario en showModal');
-            console.log(user);
+            //console.log(user);
             
             //ABRE de una ventana modal ($uibModal utiliza promesas para devolver los objetos)
             var modalInstance = $uibModal.open({  
@@ -61,7 +61,7 @@ angular.module('promotorApp')
                 } 
             })
 
-            console.log($scope.user);
+            //console.log($scope.user);
 
           } 
              /* Esto sería en caso de que quisiesemos utilizar lo que nos devuelve la ventana modal al hacer "close" ($scope.data)

@@ -23,7 +23,7 @@ angular.module('promotorApp')
             promotoresFactory.detailObra($routeParams.id, $scope.codigoObra).then(
                     function(response) {
                        /* $scope.promotorDatos = response.data; */
-                        console.log(response.data);
+                        //console.log(response.data);
                         $scope.obraDatos = response.data.promociones[0];
                     },
                     function(err) {

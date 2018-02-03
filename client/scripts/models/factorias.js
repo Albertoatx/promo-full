@@ -117,7 +117,7 @@ angular.module('promotorApp')
                 //GOOGLE MAPS **********************************************************************************
                 initMap: function (coordenates, promotorData) {
 
-                    console.log(promotorData);
+                    //console.log(promotorData);
 
                     if (coordenates && coordenates.latitud !== 0 && coordenates.longitud !== 0) {
 
@@ -296,11 +296,13 @@ angular.module('promotorApp')
                     }
                 }, */
                 checkAccess: function (){
+                    /*
                     console.log("Entra en metodo checkAcess");
                     console.log("current user: "  + $rootScope.current_user);
                     console.log("administrator: " + $rootScope.administrator);
                     console.log("authenticated: " + $rootScope.authenticated);
                     console.log("-----------------------------------------------");
+                    */
 
                     // Create a deferred operation (this object contains the promise we'll return)
                     var deferred = $q.defer(); 
@@ -308,7 +310,7 @@ angular.module('promotorApp')
                     //Call 'resolve' on a deferred object to complete it successfully, 
                     //Call 'reject' to fail it with an error.
                     if ($rootScope.authenticated) {
-                        console.log("El usuario ha entrado en el sistema y puede consultar esta ruta");
+                        //console.log("El usuario ha entrado en el sistema y puede consultar esta ruta");
                         deferred.resolve();
                     } else {
                         alert("¡No tienes permisos para acceder aquí! Antes debes entrar en el sistema");
@@ -333,24 +335,26 @@ angular.module('promotorApp')
                         deferred.reject();
                         $location.path('/user/' + $rootScope.current_user);
                     } else {
-                        console.log("El usuario ha accedido correctamente a los datos de su perfil");
+                        //console.log("El usuario ha accedido correctamente a los datos de su perfil");
                         deferred.resolve();
                     }
 
                     return deferred.promise;  //Return the promise
                 },
                 checkAccessWithRole: function (){
+                    /*
                     console.log("Entra en metodo checkAccessWithRole (admin)");
                     console.log("current user: "  + $rootScope.current_user);
                     console.log("administrator: " + $rootScope.administrator);
                     console.log("authenticated: " + $rootScope.authenticated);
                     console.log("-----------------------------------------------");
+                    */
 
                     // Create a deferred operation (this object contains the promise we'll return)
                     var deferred = $q.defer(); 
 
                     if ($rootScope.authenticated && $rootScope.administrator) {
-                        console.log("El usuario ha entrado en el sistema y tiene permisos para consultar esta ruta");
+                        //console.log("El usuario ha entrado en el sistema y tiene permisos para consultar esta ruta");
                         deferred.resolve();
                     } else if ($rootScope.authenticated) {
                         alert("No tienes permisos para acceder aquí: son necesarios permisos de administrador");

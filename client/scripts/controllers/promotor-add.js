@@ -21,7 +21,7 @@ angular.module('promotorApp')
             $scope.isError = false;      
             $scope.errorMsg = '';
             $scope.provincias = provinciasDataSvc.provincias;
-            console.log($scope.provincias);
+            //console.log($scope.provincias);
 
             //$scope.promotorDatos.direcp.provincia = '';
                   
@@ -33,7 +33,7 @@ angular.module('promotorApp')
                                         && $scope.promotorDatos.direcp.provincia !== "") { 
 
                   console.log("ENTRA EN IF para dar de alta un promotor"); */
-                  console.log($scope.promotorDatos);
+                  //console.log($scope.promotorDatos);
                   
                   promotoresFactory.savePromotor($scope.promotorDatos).then(
                     function() {

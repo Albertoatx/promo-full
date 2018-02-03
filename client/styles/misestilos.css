@@ -6,21 +6,34 @@
 }
 
 body {
-  padding: 0;
+  padding: 0px;  /* OJO */
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.container {
+ /* max-width: 1024px;  /* cambie esta propiedad para ver más info en las filas de las tablas */
+ /* width: 85%;  */ /* problema navbar, 2 lineas */
+}
+
+/* So that the nav bar does not cover the content when desktop size */
+#main {
+  margin-top:12px;
+  padding-top: 12px;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
+/*
 .header,
 .marketing,
 .footer {
   padding-left: 15px;
   padding-right: 15px;
-}
+} */
 
 /* Custom page header */
 .header {
-  border-bottom: 1px solid #e5e5e5;
-  margin-bottom: 10px;
+ /* border-bottom: 1px solid #e5e5e5; */
+  margin-bottom: 30px;
 }
 /* Make the masthead heading the same height as the navigation */
 .header h3 {
@@ -45,6 +58,7 @@ body {
 .jumbotron {
   text-align: center;
   border-bottom: 1px solid #e5e5e5;
+  margin-top: 20px;
 }
 .jumbotron .btn {
   font-size: 21px;
@@ -102,17 +116,34 @@ body {
 } */
 
 .large-Modal .modal-dialog{
-  width:600px; 
-  height: 800px;
+  width: 650px; 
+  /* max-height: 100vh; */ /* no hace nada */
   position: relative;
-  top:0; bottom: 0; left: 0; right: 0;
-  margin: auto
+  /* top:0; */ /* comment to avoid being on top of window */
+  bottom: 0; 
+  left: 0; 
+  right: 0;
+  margin: 20vh auto;  /*  to center it in height and wide */
+  overflow: auto; 
 }
 
+/* OJO
 .large-Modal .modal-content {
     max-height: 800px;
     overflow: auto;
 }
+*/ 
+.modal-body .row {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.modal-header #modal-title{
+  text-align: center;
+}
+
 
 .scr-title{
     color: #8f746c;
@@ -273,30 +304,6 @@ th {
 }
 
 
-/* Responsive: Portrait tablets and up ----------------------------------------*/
-@media screen and (min-width: 768px) {
-  .container {
-    max-width: 1024px; /* cambie esta propiedad para ver más info en las filas de las tablas */
-    /*max-height: 768px; /* lo puse para probar, el pie de pagina sale por encima */
-  }
-
-  /* Remove the padding we set earlier */
-  .header,
-  .marketing,
-  .footer {
-    padding-left: 0;
-    padding-right: 0;
-  }
-  /* Space out the masthead */
-  .header {
-    margin-bottom: 30px;
-  }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
-  }
-}
-
 /* ESTILOS PARA LA PANTALLA DE LOGIN ***********************************************/
 .form-signin {
   max-width: 330px;
@@ -357,12 +364,6 @@ th {
 }
 
 /* Estilos de otras APP, prueba visual *******************************/
-
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
 a {
   color: #00B7FF;
 }
@@ -398,4 +399,194 @@ a {
   padding: 0;
 }
 
+.navbar-right {
+  margin-right: 0px; 
+}
 
+/* Responsive: MEDIA QUERIES -------------------------------------------------*/
+/* Remember rules at the bottom overrides rules at the top                    */
+/* Apply these rules to all screens which have a minimum width of 1441 pixels */
+@media screen and (min-width: 1441px) and (max-width: 2712px) {
+  .container {
+     width: 75%; 
+  }  
+}
+
+
+/* LAPTOPS */
+/* Apply these rules to all screens which have a minimum width of 992 pixels */
+@media screen and (min-width: 992px) and (max-width: 1440px) {
+  .container {
+   /* width: 80%; */ /* problema con nav-bar, 2 lineas */
+    max-width: 1024px;  
+  }
+}
+
+
+/* Change "grid float breakpoint" so that navbar' stays collapsed until screen is wide enough */
+/* For Bootstrap 3.3.x, this is the working CSS to override the "navbar breakpoint". 
+/* Set 'max-width' to the pixel dimension at which you want the navbar to collapse... */
+/*      Note: This CSS only works for anything over 768px. */
+/* Apply these rules to all screens which between 768px and 992px */
+@media (max-width: 992px) { 
+
+  .container {
+    width: 90%;
+  }
+
+  /* don't want padding and margin for #main in this resolution */
+  #main {
+      margin-top:0px;
+      padding-top: 0px;
+  }
+
+  .navbar-header {
+      float: none;
+  }
+  .navbar-left,.navbar-right {
+      float: none !important; 
+   /* float: right !important; */
+   /*   margin-right: 0px;  */
+  }
+  .navbar-toggle {
+      display: block;
+  }
+  .navbar-collapse {
+      border-top: 1px solid transparent;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .navbar-fixed-top {
+      top: 0;
+      border-width: 0 0 1px;
+      position:static; /*/* avoid dropdown menu covering content when collapsing navbar */
+  }
+  .navbar-collapse.collapse {
+      display: none!important;
+  }
+  .navbar-nav {
+      float: none!important; 
+      margin-top: 7.5px;
+  }
+  .navbar-nav>li {
+      float: none; 
+  }
+  .navbar-nav>li>a {
+      padding-top: 10px;
+      padding-bottom: 10px;
+  }
+  .collapse.in{
+      display:block !important;
+  }
+
+  .navbar-nav > li > a { /* mio: to have app menu on the center of the dropdown menu */
+    text-align: center;
+  }  
+
+  .navbar-text { /* mio, to have user session on the center of the dropdown menu */
+    text-align: right;
+  }
+
+  .navbar-brand { /* mio: to have the title of the navbar on the right when menu dropped */
+    float: right;
+  }
+}
+
+
+/* FOR TABLETS */
+/* Apply these rules to all screens which between 480px and 768px */
+@media screen and (max-width: 768px) {
+
+  .container {
+    width: 90%;
+  }
+
+  /* Remove the padding we set earlier */
+  .marketing,
+  .footer {
+    padding-left: 3px;
+    padding-right: 3px;
+  } 
+
+  .header {
+    margin-bottom: 3px;
+  }
+
+  /* VERY IMPORTANT: avoid dropdown menu covering content when viewing small screens */
+  .navbar-fixed-top {
+    position: static;
+  }
+
+  /* don't want padding and margin for #main in this resolution */
+  #main {
+    margin-top:0px;
+    padding-top: 0px;
+  }
+
+  .jumbotron .lead img {   /* mio, make image bigger when in small screens */
+    max-height:85%;
+    width:85%;
+  }
+
+  /* Instead of using a %, the units vh set it to a percent of the viewport (browser window) size. */
+  .modal-dialog{
+    max-width: 450px;
+    width: auto; 
+    max-height: 95vh; 
+  }
+
+  .modal-header #modal-title{
+    font-size: 26px;
+  }
+
+  .modal-body .form-group {
+     margin-bottom: 8px;  /* override less value of 15px */
+  }
+}
+
+
+
+/* FOR MOBILES ----------- */
+/* Apply these rules to all screens which up to 480px (check screens above 320px) */
+@media screen and (max-width: 480px) {
+
+  .container {
+    width: 98%;
+  }
+
+  /* VERY IMPORTANT! to avoid the table going out container width and overflowing */
+  .table {
+    table-layout: fixed;
+    word-wrap: break-word;
+    max-width: 99%;
+  }
+  
+  /* titles in tabel top aligned */
+  .table > thead > tr > th {
+    vertical-align: top;
+  }
+
+  .marketing,
+  .footer {
+    padding-left: 0.5px;
+    padding-right: 0.5px;
+  } 
+
+ 
+  .jumbotron .lead img {   
+    max-height:95%;
+    width:95%;
+  }
+  
+
+  .jumbotron .btn {
+    font-size: 14px;
+    padding: 14px 10px;  
+  } 
+
+    
+  .modal-dialog{
+    max-width: 300px;
+    width: auto; 
+    max-height: 100vh; 
+  }
+}

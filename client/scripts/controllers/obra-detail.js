@@ -22,7 +22,7 @@ angular.module('promotorApp')
 		            function(response) {
 		            	//OJO devuelve el _id del documento + array llamado "promociones" con solo 1 elemento.
 		                $scope.obraDatos = response.data.promociones[0];
-		                $log.info($scope.obraDatos);
+		                //$log.info($scope.obraDatos);  //muestra en consola del navegador web
 		            },
 		            function(err) {
 		                $log.error(err);

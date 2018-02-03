@@ -22,8 +22,8 @@ angular.module('promotorApp')
                   // $scope.resultado = response.data;        
                   $scope.obras = response.data; 
                   $scope.countObras = response.data.length;
-                  console.log("LISTADO DE TODAS LAS OBRAS");
-                  console.log($scope.obras);
+                  //console.log("LISTADO DE TODAS LAS OBRAS");
+                  //console.log($scope.obras);
               },
               function(err) {
                   $log.error(err);

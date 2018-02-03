@@ -12,6 +12,9 @@ var cookieParser = require('cookie-parser');
 // Create the application.
 var app = express();
 
+//use port 3000 unless there exists a preconfigured port
+var port = process.env.PORT || 3000;
+
 // Add Middleware necessary for REST API's.
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -75,6 +78,6 @@ mongoose.connection.once('open', function() {
   app.use('/api', apiPromo);
   app.use('/auth', apiAuth);
 								
-  console.log('Listening on port 3000...');
-  app.listen(3000);
+  console.log('Listening on port ' + port + '...');
+  app.listen(port);
 });

@@ -52,7 +52,7 @@ angular.module('promotorApp')
                     $scope.promotores = response.data; 
                     $scope.promotoresAll = response.data; 
                     $scope.countPromo = response.data.length;
-                    console.log($scope.countPromo);
+                    //console.log($scope.countPromo);
                 },
                 function(err) {
                     $log.error(err);
@@ -94,7 +94,7 @@ angular.module('promotorApp')
 
           //OPCION1: Usar un FILTRO de Angular, de este modo no hace falta ir al servidor por "mis promotores"
           $scope.gestionarCheckbox = function() {   
-            console.log('Entra en validarCheckbox');
+            //console.log('Entra en validarCheckbox');
 
             if ($scope.activado) {
                 $scope.usuario = $rootScope.current_user;

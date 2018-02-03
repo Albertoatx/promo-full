@@ -20,7 +20,7 @@ angular.module('promotorApp')
 			$scope.resultados = {};
 			$scope.promotorDatos = {}; //Vaciamos el objeto movie del $scope
 			$scope.promotorDatos._id = $routeParams.id;
-			console.log($scope.promotorDatos._id);
+			//console.log($scope.promotorDatos._id);
 			//console.log(provinciasDataSvc.provincias);
 
 			$scope.isError = false;
@@ -30,7 +30,7 @@ angular.module('promotorApp')
 			promotoresFactory.detailPromotor($scope.promotorDatos._id).then(
 				function (response) {
 					$scope.promotorDatos = response.data;
-					$log.info($scope.promotorDatos);
+					//$log.info($scope.promotorDatos);  //muestra traza por consola navegador
 
 					if ($scope.promotorDatos.direcp && $scope.promotorDatos.direcp !== {}) {
 						$scope.addressFilled = true; //Solo mostramos el boton mapa si hay dirección
