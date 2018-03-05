@@ -16,18 +16,13 @@ Take into account that:
 
 
 ## Installation and Running the App
+Download or clone the repo.
+
 Make sure nodemon is installed globally:
 
 ```bash
 npm install -g nodemon
 ```
-
-Clone the repo:
-
-```bash
-git clone https://github.com/Albertoatx/promo-back.git
-```
-
 
 Navigate inside the 'server' folder to install the necessary dependencies for the app to work:
 
