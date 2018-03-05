@@ -33,8 +33,8 @@ var Promotor = require('../models/Promotor.js');
 // Normalmente querremos hacer seguras las rutas que permiten modificar datos. 
 function sessionCheck(request, response, next) {
     console.log('Comprobando la sesion del usuario: ' + request.session.user );
-
-    //next();
+    //next(); //OJO SOLO PARA TEST luego COMENTAR y descomentar lo de abajo
+    
     if (request.session.user) 
         next();
     else 

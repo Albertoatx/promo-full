@@ -27,8 +27,10 @@ angular.module('promotorApp')
                         //$scope.isRegistrado = true; 
                         $rootScope.authenticated = true; 
                         //console.log('REGISTRO DE USUARIO OK')
-                        //console.log(res.data);
-                        $rootScope.current_user = res.data;
+                        //console.log(res);
+
+                        //$rootScope.current_user = res.data; //ESTO si desde BACK-END solo enviamos 'username' (string)
+                        $rootScope.current_user = res.data.username; //Esto si desde BACK-END enviamos el usuario en formato Json
                         $location.path('/promotores'); //2 opciones tras registar, crear sesion en backend y llevar a pantalla promo
                         //$location.path('/user/login');   //No crear la sesion y llevar a la pantalla de login
                     },

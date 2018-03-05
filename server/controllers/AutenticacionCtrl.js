@@ -20,12 +20,13 @@ var createHash = function(password){
 function sessionCheck(request, response, next) {
     console.log('Comprobando la sesion del usuario: ' + request.session.user );
 
-    //next();
+	//next();   //ONLY FOR TESTING
+	
     if (request.session.user) 
         next();
     else 
         response.status(401).send('Autorización fallida: No ha iniciado sesión para poder realizar esta operación');
-        //response.status(401).send('sessionCheck: authorization failed');
+		//response.status(401).send('sessionCheck: authorization failed');
 }
 
 function trackSession(operativa, request) {
@@ -59,20 +60,24 @@ router.post('/signup', function(request, response) {
     hash = bcrypt.hashSync(password, salt); */
 
     var username = request.body.username;
+	//console.log('SIGN-UP -----------');
 
     // find a user in mongo with provided username
 	User.findOne({ 'username' :  username }, function(err, user) {
 				
 		if (err){
+			//console.log('500: Error al intentar registarse (signup) '+ err);
 			return response.status(500).send("Error al intentar registarse (signup)" + err);
-			//return response.send(500, "Error in Signup" + err);
+			//return response.send(500, "Error in Signup" + err); 
 		}
 
 		// if the user already exists we must not create it
 		if (user) {
-			//console.log('User already exists with username: '+ username);
-			return response.status(401).send("Ese usuario ya existe en el sistema");
-			//return response.send(401, "User already exist");
+			console.log('401: User already exists with username: '+ username);
+			//var error = { mensaje: 'Ese usuario ya existe en el sistema' }; //Angular5 (solo por hacer una prueba)
+			//return response.status(401).send(error);
+
+			return response.status(401).send("Ese usuario ya existe en el sistema"); //ANGULAR1
 		} else {
 
 			// if there is no user, create the user
@@ -94,7 +99,9 @@ router.post('/signup', function(request, response) {
 					
 					request.session.user = newUser.username;
 					trackSession("SIGN UP", request);
-					return response.status(200).send(newUser.username);
+					console.log('200: User saved ok');
+					//return response.status(200).send(newUser.username); //we send back ONLY the username in String format
+					return response.status(200).send({ username: newUser.username} ); // Better send back username in JSON format
 					
 		        	//return response.status(200).send(newUser.username, "usuario creado ok"); //para que aparezca en pantalla el usuario
 					//return response.send('User successfully created');
@@ -107,7 +114,7 @@ router.post('/signup', function(request, response) {
 			        });
 					*/
 		        } else {
-		        	//console.log('Error in Saving user: '+ err);  
+		        	//console.log('Error in Saving user (sign up): '+ err);  
 		            return response.send(err);
 		        }
 
