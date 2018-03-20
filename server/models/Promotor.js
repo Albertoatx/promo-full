@@ -34,7 +34,10 @@ var PromotorSchema = new mongoose.Schema({
   promociones: [Promociones],
   creado_el: {type: Date, default: Date.now},
   actualizado_el: {type: Date, default: Date.now}
-});
+}
+, 
+ { usePushEach: true } // needed for MongoDB 3.6
+);
 
 // Export the model.
 module.exports = mongoose.model('Promotor', PromotorSchema);

@@ -12,11 +12,21 @@ Take into account that:
 
 ## Requirements
 - [Node and npm](https://nodejs.org)
-- [MongoDB Database](https://www.mongodb.com)
+- [Local MongoDB Database](https://www.mongodb.com/download-center#community)
+
+I have only tested MongoDB on Windows platforms. If that is your OS then follow these steps:
+
+1) Set up the MongoDB environment. MongoDB requires a data directory to store all data so you have to create the folder `\data\db` on the drive from which you start MongoDB.
+
+2) Start MongoDB manually. To start the main MongoDB process run `mongod` using a terminal (`mongod` is usually located in the folder "C:\Program Files\MongoDB\Server\3.x\bin")
+
+Note: In this link you can check the instructions to setup and run MongoDB for other OS: `https://docs.mongodb.com/manual/installation/#tutorials)`
 
 
 ## Installation and Running the App
 Download or clone the repo.
+
+Make sure MongoDB is running.
 
 Make sure nodemon is installed globally:
 
@@ -24,7 +34,7 @@ Make sure nodemon is installed globally:
 npm install -g nodemon
 ```
 
-Navigate inside the 'server' folder to install the necessary dependencies for the app to work:
+Navigate inside the `server` folder to install the necessary dependencies for the app to work:
 
 ```bash
 npm install
